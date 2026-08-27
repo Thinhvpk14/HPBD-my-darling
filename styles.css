@@ -216,6 +216,10 @@ body {
   margin: 0;
 }
 
+.status.error {
+  color: #fca5a5;
+}
+
 .guess-form {
   margin-top: 16px;
 }

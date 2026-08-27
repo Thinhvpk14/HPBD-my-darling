@@ -7,9 +7,9 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <title>Đoán mật khẩu</title>
-    <link rel="stylesheet" href="styles.css?v=5" />
+    <link rel="stylesheet" href="styles.css?v=6" />
     <script>
-      window.APP_VERSION = "5";
+      window.APP_VERSION = "6";
       fetch("version.json?t=" + Date.now(), { cache: "no-store" })
         .then((res) => res.json())
         .then((data) => {
@@ -51,7 +51,7 @@
         <div class="panel-head">
           <h2>Lần đoán tiếp theo</h2>
           <div class="panel-tools">
-            <p id="status" class="status">Lần 1 · 5 số ngẫu nhiên đã sẵn sàng</p>
+            <p id="status" class="status" aria-live="polite">Lần 1 · 5 số ngẫu nhiên đã sẵn sàng</p>
             <button type="button" id="new-game-btn" class="btn ghost compact">
               Ván mới
             </button>
@@ -85,6 +85,6 @@
         </div>
       </div>
     </main>
-    <script src="app.js?v=5"></script>
+    <script src="app.js?v=6"></script>
   </body>
 </html>

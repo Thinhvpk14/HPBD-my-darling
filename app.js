@@ -18,6 +18,7 @@ let secret = [];
 let attempts = 0;
 let won = false;
 let activeIndex = 0;
+let playStatus = "";
 
 function hasUniqueDigits(digits) {
   return new Set(digits).size === digits.length;
@@ -94,6 +95,7 @@ function fillRandom() {
     slot.value = code[index];
   });
   activeIndex = LENGTH - 1;
+  syncGuessState();
 }
 
 function currentGuess() {
@@ -104,32 +106,41 @@ function isCompleteGuess(guess) {
   return guess.length === LENGTH && guess.every((digit) => /^\d$/.test(digit));
 }
 
-function otherValues(exceptIndex) {
-  return slots()
-    .map((slot, index) => (index === exceptIndex ? "" : slot.value))
-    .filter(Boolean);
+function hasDuplicateDigits(guess) {
+  const filled = guess.filter((digit) => /^\d$/.test(digit));
+  return filled.length !== new Set(filled).size;
 }
 
-function applyDigit(index, digit) {
-  if (!/^\d$/.test(digit)) return false;
-  if (otherValues(index).includes(digit)) {
-    statusEl.textContent = "Mỗi chữ số chỉ được dùng một lần.";
-    return false;
+function setPlayStatus(text) {
+  playStatus = text;
+  statusEl.textContent = text;
+  statusEl.classList.remove("error");
+}
+
+function syncGuessState() {
+  if (won) {
+    submitBtn.disabled = true;
+    return;
   }
-  slots()[index].value = digit;
-  return true;
+  const duplicate = hasDuplicateDigits(currentGuess());
+  submitBtn.disabled = duplicate;
+  if (duplicate) {
+    statusEl.textContent = "Không được trùng số.";
+    statusEl.classList.add("error");
+    return;
+  }
+  statusEl.textContent = playStatus;
+  statusEl.classList.remove("error");
 }
 
 function onSlotInput(event) {
-  const index = Number(event.target.dataset.index);
   const digit = event.target.value.replace(/\D/g, "").slice(-1);
-  event.target.value = "";
-  if (!digit) return;
-  if (!applyDigit(index, digit)) return;
-  if (activeIndex < LENGTH - 1) {
+  event.target.value = digit;
+  if (digit && activeIndex < LENGTH - 1) {
     activeIndex += 1;
     slots()[activeIndex].focus();
   }
+  syncGuessState();
 }
 
 function onSlotKeydown(event) {
@@ -151,19 +162,13 @@ function onPaste(event) {
   if (!text) return;
   const start = Number(event.target.dataset.index);
   const values = currentGuess();
-  for (let i = start; i < LENGTH; i += 1) values[i] = "";
-  const used = new Set(values.filter(Boolean));
-  let offset = 0;
-  for (let i = 0; i < text.length && start + offset < LENGTH; i += 1) {
-    const digit = text[i];
-    if (used.has(digit)) continue;
-    used.add(digit);
-    values[start + offset] = digit;
-    offset += 1;
+  for (let i = 0; i < text.length && start + i < LENGTH; i += 1) {
+    values[start + i] = text[i];
   }
   slots().forEach((slot, index) => {
     slot.value = values[index] || "";
   });
+  syncGuessState();
 }
 
 function renderHistoryRow(guess, marks, greens) {
@@ -197,9 +202,10 @@ function createKeypad() {
     key.textContent = String(n);
     key.addEventListener("click", () => {
       if (won) return;
-      if (!applyDigit(activeIndex, String(n))) return;
+      slots()[activeIndex].value = String(n);
       if (activeIndex < LENGTH - 1) activeIndex += 1;
       slots()[activeIndex].focus();
+      syncGuessState();
     });
     keypadEl.appendChild(key);
   }
@@ -218,16 +224,18 @@ function createKeypad() {
       slots()[activeIndex].value = "";
     }
     slots()[activeIndex].focus();
+    syncGuessState();
   });
   keypadEl.appendChild(del);
 }
 
 function setPlaying(enabled) {
-  submitBtn.disabled = !enabled;
   randomBtn.disabled = !enabled;
   slots().forEach((slot) => {
     slot.disabled = !enabled;
   });
+  if (!enabled) submitBtn.disabled = true;
+  else syncGuessState();
 }
 
 function submitGuess(event) {
@@ -236,11 +244,13 @@ function submitGuess(event) {
 
   const guess = currentGuess();
   if (!isCompleteGuess(guess)) {
-    statusEl.textContent = `Hãy điền đủ ${LENGTH} chữ số.`;
+    setPlayStatus(`Hãy điền đủ ${LENGTH} chữ số.`);
     return;
   }
   if (!hasUniqueDigits(guess)) {
-    statusEl.textContent = "Dãy số không được trùng chữ số.";
+    submitBtn.disabled = true;
+    statusEl.textContent = "Không được trùng số.";
+    statusEl.classList.add("error");
     return;
   }
 
@@ -248,7 +258,7 @@ function submitGuess(event) {
   attempts += 1;
   emptyHintEl.hidden = true;
   renderHistoryRow(guess, marks, greens);
-  statusEl.textContent = `Lần ${attempts} · ${greens}/${LENGTH} đúng vị trí`;
+  setPlayStatus(`Lần ${attempts} · ${greens}/${LENGTH} đúng vị trí`);
 
   if (greens === LENGTH) {
     won = true;
@@ -273,7 +283,8 @@ function newGame() {
   createSlots();
   setPlaying(true);
   fillRandom();
-  statusEl.textContent = `Lần 1 · ${LENGTH} số ngẫu nhiên đã sẵn sàng`;
+  setPlayStatus(`Lần 1 · ${LENGTH} số ngẫu nhiên đã sẵn sàng`);
+  syncGuessState();
   slots()[0].focus();
 }
 
@@ -281,6 +292,7 @@ formEl.addEventListener("submit", submitGuess);
 randomBtn.addEventListener("click", () => {
   fillRandom();
   slots()[0].focus();
+  syncGuessState();
 });
 newGameBtn.addEventListener("click", newGame);
 replayBtn.addEventListener("click", newGame);
