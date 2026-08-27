@@ -6,10 +6,10 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-    <title>Đoán mật khẩu</title>
-    <link rel="stylesheet" href="styles.css?v=6" />
+    <title>Hành trình giải đố</title>
+    <link rel="stylesheet" href="styles.css?v=7" />
     <script>
-      window.APP_VERSION = "6";
+      window.APP_VERSION = "7";
       fetch("version.json?t=" + Date.now(), { cache: "no-store" })
         .then((res) => res.json())
         .then((data) => {
@@ -26,15 +26,37 @@
   <body>
     <main class="app">
       <header class="hero">
-        <p class="eyebrow">5 chữ số không trùng · xanh / vàng / đỏ</p>
-        <h1>Đoán mật khẩu</h1>
-        <p class="lede">
-          Lần 1 đã điền ngẫu nhiên 5 số khác nhau. Xanh = đúng số và đúng vị trí,
-          vàng = đúng số nhưng sai vị trí, đỏ = sai số. Không dùng lại cùng một
-          chữ số.
-        </p>
+        <p id="campaign-eyebrow" class="eyebrow">Màn 1 / 2</p>
+        <h1 id="campaign-title">Đoán mật khẩu</h1>
+        <p id="campaign-lede" class="lede"></p>
       </header>
 
+      <nav id="stage-nav" class="stage-nav" aria-label="Các màn chơi"></nav>
+      <div id="stage-root"></div>
+    </main>
+
+    <aside id="debug-panel" class="debug-panel" hidden>
+      <p class="debug-title">Debug · thêm ?debug=1 vào URL</p>
+      <div class="debug-row">
+        <label>
+          Màn
+          <select data-debug-stage></select>
+        </label>
+        <button type="button" class="btn ghost compact" data-debug-complete>
+          Xong màn này
+        </button>
+        <button type="button" class="btn ghost compact" data-debug-reset>
+          Reset progress
+        </button>
+        <label class="debug-check">
+          <input type="checkbox" data-debug-persist />
+          Giữ debug
+        </label>
+      </div>
+      <pre data-debug-info></pre>
+    </aside>
+
+    <template id="tpl-password">
       <section class="legend" aria-label="Chú thích màu">
         <span class="chip chip-green"><i></i> Xanh · đúng vị trí</span>
         <span class="chip chip-yellow"><i></i> Vàng · sai vị trí</span>
@@ -43,48 +65,55 @@
       </section>
 
       <section class="board" aria-live="polite">
-        <div id="history" class="history"></div>
-        <p id="empty-hint" class="empty-hint">Chưa có lần đoán nào.</p>
+        <div data-history class="history"></div>
+        <p data-empty-hint class="empty-hint">Chưa có lần đoán nào.</p>
       </section>
 
       <section class="panel">
         <div class="panel-head">
           <h2>Lần đoán tiếp theo</h2>
           <div class="panel-tools">
-            <p id="status" class="status" aria-live="polite">Lần 1 · 5 số ngẫu nhiên đã sẵn sàng</p>
-            <button type="button" id="new-game-btn" class="btn ghost compact">
-              Ván mới
-            </button>
+            <p data-status class="status" aria-live="polite">Lần 1 · 5 số ngẫu nhiên đã sẵn sàng</p>
+            <button type="button" data-new-game class="btn ghost compact">Ván mới</button>
           </div>
         </div>
 
-        <form id="guess-form" class="guess-form" autocomplete="off">
-          <div id="slots" class="slots" role="group" aria-label="5 chữ số không trùng"></div>
+        <form data-guess-form class="guess-form" autocomplete="off">
+          <div data-slots class="slots" role="group" aria-label="5 chữ số"></div>
           <div class="actions">
-            <button type="button" id="random-btn" class="btn ghost">
-              Điền ngẫu nhiên
-            </button>
-            <button type="submit" id="submit-btn" class="btn primary">
-              Đoán
-            </button>
+            <button type="button" data-random class="btn ghost">Điền ngẫu nhiên</button>
+            <button type="submit" data-submit class="btn primary">Đoán</button>
           </div>
         </form>
-
-        <div id="keypad" class="keypad" aria-label="Bàn phím số"></div>
+        <div data-keypad class="keypad" aria-label="Bàn phím số"></div>
       </section>
 
-      <div id="win-modal" class="modal" hidden>
+      <div data-win-modal class="modal" hidden>
         <div class="modal-card">
           <p class="eyebrow">Mở khóa thành công</p>
           <h2>Đúng mật khẩu!</h2>
-          <p id="win-text" class="lede"></p>
-          <div id="win-code" class="win-code"></div>
-          <button type="button" id="replay-btn" class="btn primary">
-            Chơi ván mới
-          </button>
+          <p data-win-text class="lede"></p>
+          <div data-win-code class="win-code"></div>
+          <div class="actions modal-actions">
+            <button type="button" data-replay class="btn ghost">Chơi lại màn này</button>
+            <button type="button" data-next class="btn primary">Màn tiếp theo</button>
+          </div>
         </div>
       </div>
-    </main>
-    <script src="app.js?v=6"></script>
+    </template>
+
+    <template id="tpl-coming-soon">
+      <section class="panel coming-soon">
+        <p class="eyebrow">Chỗ gắn game mới</p>
+        <h2>Màn 2 đang chờ</h2>
+        <p class="lede">
+          Thêm stage trong <code>js/main.js</code> và một file
+          <code>js/stages/...</code> là đủ. Engine, debug, progress dùng chung.
+        </p>
+        <button type="button" data-back class="btn ghost">Về màn 1</button>
+      </section>
+    </template>
+
+    <script type="module" src="js/main.js?v=7"></script>
   </body>
 </html>

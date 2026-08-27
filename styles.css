@@ -63,6 +63,40 @@ body {
   line-height: 1.55;
 }
 
+.stage-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 22px;
+}
+
+.stage-pill {
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.stage-pill:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.stage-pill[data-active="true"] {
+  color: #042433;
+  background: linear-gradient(180deg, #38bdf8, #0284c7);
+  border-color: transparent;
+}
+
+.stage-pill[data-cleared="true"]:not([data-active="true"]) {
+  color: #bbf7d0;
+  border-color: var(--green);
+}
+
 .legend {
   display: flex;
   flex-wrap: wrap;
@@ -334,6 +368,84 @@ body {
   background: var(--green);
   color: #052e16;
   font-weight: 800;
+}
+
+.modal-actions {
+  justify-content: center;
+}
+
+.coming-soon {
+  padding: 28px;
+}
+
+.coming-soon h2 {
+  margin: 8px 0 12px;
+}
+
+.coming-soon code {
+  color: var(--accent);
+  font-size: 0.92em;
+}
+
+.debug-panel {
+  position: sticky;
+  bottom: 0;
+  margin: 0 auto;
+  width: min(720px, calc(100% - 32px));
+  padding: 12px 14px 16px;
+  border: 1px solid var(--line);
+  border-bottom: 0;
+  border-radius: 16px 16px 0 0;
+  background: #07101f;
+  box-shadow: var(--shadow);
+}
+
+.debug-panel[hidden] {
+  display: none;
+}
+
+.debug-title {
+  margin: 0 0 8px;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.debug-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.debug-row select,
+.debug-check {
+  font: inherit;
+  color: var(--text);
+  background: #0b1220;
+}
+
+.debug-row select {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 6px 8px;
+}
+
+.debug-check {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 0.86rem;
+}
+
+.debug-panel pre {
+  margin: 10px 0 0;
+  max-height: 140px;
+  overflow: auto;
+  font-size: 0.78rem;
+  color: #cbd5e1;
 }
 
 @keyframes pop {
