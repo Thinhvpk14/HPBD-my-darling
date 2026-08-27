@@ -214,8 +214,7 @@ body {
 }
 
 .history .tiles {
-  width: 50%;
-  min-width: 140px;
+  width: 100%;
   gap: 4px;
 }
 
@@ -231,8 +230,9 @@ body {
 }
 
 .history .tile {
-  font-size: 0.72rem;
-  border-radius: 6px;
+  aspect-ratio: 2 / 1;
+  font-size: 0.85rem;
+  border-radius: 8px;
 }
 
 .tile.correct {
