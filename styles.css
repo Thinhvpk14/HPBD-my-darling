@@ -197,13 +197,13 @@ body {
 
 .history {
   display: grid;
-  gap: 12px;
+  gap: 6px;
 }
 
 .guess-row {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
 }
 
@@ -211,6 +211,12 @@ body {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
+}
+
+.history .tiles {
+  width: 50%;
+  min-width: 140px;
+  gap: 4px;
 }
 
 .tile,
@@ -222,6 +228,11 @@ body {
   font-size: 1.35rem;
   font-weight: 800;
   border: 1px solid var(--line);
+}
+
+.history .tile {
+  font-size: 0.72rem;
+  border-radius: 6px;
 }
 
 .tile.correct {
@@ -243,14 +254,14 @@ body {
 }
 
 .note {
-  min-width: 52px;
-  padding: 8px 8px;
-  border-radius: 12px;
+  min-width: 28px;
+  padding: 4px 6px;
+  border-radius: 8px;
   text-align: center;
   background: var(--green-dim);
   color: #bbf7d0;
   font-weight: 700;
-  font-size: 0.82rem;
+  font-size: 0.7rem;
 }
 
 .empty-hint {
