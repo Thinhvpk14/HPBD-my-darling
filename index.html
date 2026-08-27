@@ -2,14 +2,14 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <title>Hành trình giải đố</title>
-    <link rel="stylesheet" href="styles.css?v=7" />
+    <link rel="stylesheet" href="styles.css?v=8" />
     <script>
-      window.APP_VERSION = "7";
+      window.APP_VERSION = "8";
       fetch("version.json?t=" + Date.now(), { cache: "no-store" })
         .then((res) => res.json())
         .then((data) => {
@@ -57,36 +57,47 @@
     </aside>
 
     <template id="tpl-password">
-      <section class="legend" aria-label="Chú thích màu">
-        <span class="chip chip-green"><i></i> Xanh · đúng vị trí</span>
-        <span class="chip chip-yellow"><i></i> Vàng · sai vị trí</span>
-        <span class="chip chip-red"><i></i> Đỏ · sai số</span>
-        <span class="chip chip-rule"><i></i> Không trùng chữ số</span>
-      </section>
-
-      <section class="board" aria-live="polite">
-        <div data-history class="history"></div>
-        <p data-empty-hint class="empty-hint">Chưa có lần đoán nào.</p>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head">
-          <h2>Lần đoán tiếp theo</h2>
-          <div class="panel-tools">
-            <p data-status class="status" aria-live="polite">Lần 1 · 5 số ngẫu nhiên đã sẵn sàng</p>
-            <button type="button" data-new-game class="btn ghost compact">Ván mới</button>
-          </div>
+      <div class="playfield">
+        <div class="play-toolbar">
+          <button type="button" data-rules class="btn ghost compact">Luật chơi</button>
+          <p data-status class="status" aria-live="polite">Lần 1 · sẵn sàng</p>
+          <button type="button" data-random class="btn ghost compact">Ngẫu nhiên</button>
         </div>
 
-        <form data-guess-form class="guess-form" autocomplete="off">
-          <div data-slots class="slots" role="group" aria-label="5 chữ số"></div>
-          <div class="actions">
-            <button type="button" data-random class="btn ghost">Điền ngẫu nhiên</button>
-            <button type="submit" data-submit class="btn primary">Đoán</button>
+        <section class="board" aria-live="polite">
+          <div data-history class="history"></div>
+          <p data-empty-hint class="empty-hint">Chưa có lần đoán. Kết quả sẽ hiện ở đây, ngay trên ô nhập.</p>
+        </section>
+
+        <section class="dock">
+          <form data-guess-form class="guess-form" autocomplete="off">
+            <div data-slots class="slots" role="group" aria-label="5 chữ số"></div>
+            <div data-keypad class="keypad" aria-label="Bàn phím số"></div>
+            <button type="submit" data-submit class="key key-guess">Đoán</button>
+          </form>
+        </section>
+      </div>
+
+      <div data-rules-modal class="modal" hidden>
+        <div class="modal-card rules-card">
+          <p class="eyebrow">Luật màn 1</p>
+          <h2>Đoán mật khẩu</h2>
+          <p class="lede">
+            Mật khẩu gồm 5 chữ số, không trùng. Lần đầu đã điền ngẫu nhiên. Gõ thoải mái;
+            nếu trùng số thì không bấm được Đoán.
+          </p>
+          <div class="legend">
+            <span class="chip chip-green"><i></i> Xanh · đúng số, đúng vị trí</span>
+            <span class="chip chip-yellow"><i></i> Vàng · đúng số, sai vị trí</span>
+            <span class="chip chip-red"><i></i> Đỏ · không có số này</span>
+            <span class="chip chip-rule"><i></i> Không trùng chữ số</span>
           </div>
-        </form>
-        <div data-keypad class="keypad" aria-label="Bàn phím số"></div>
-      </section>
+          <div class="actions modal-actions">
+            <button type="button" data-new-game class="btn ghost">Ván mới</button>
+            <button type="button" data-rules-close class="btn primary">Đã hiểu</button>
+          </div>
+        </div>
+      </div>
 
       <div data-win-modal class="modal" hidden>
         <div class="modal-card">
@@ -114,6 +125,6 @@
       </section>
     </template>
 
-    <script type="module" src="js/main.js?v=7"></script>
+    <script type="module" src="js/main.js?v=8"></script>
   </body>
 </html>

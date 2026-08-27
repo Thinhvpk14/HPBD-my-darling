@@ -3,14 +3,14 @@ import {
   hasDuplicateDigits,
   hasUniqueDigits,
   uniqueDigitCode,
-} from "../shared/mastermind.js?v=7";
+} from "../shared/mastermind.js?v=8";
 
 const LENGTH = 5;
 
 export const passwordStage = {
   id: "password",
   title: "Đoán mật khẩu",
-  lede: "5 chữ số khác nhau. Xanh = đúng vị trí, vàng = đúng số sai vị trí, đỏ = sai số.",
+  lede: "Tập trung vào các lần đoán trước và ô nhập phía dưới. Bấm Luật chơi nếu cần.",
   templateId: "tpl-password",
   mount(root, ctx) {
     const historyEl = root.querySelector("[data-history]");
@@ -27,6 +27,9 @@ export const passwordStage = {
     const winCode = root.querySelector("[data-win-code]");
     const replayBtn = root.querySelector("[data-replay]");
     const nextBtn = root.querySelector("[data-next]");
+    const rulesBtn = root.querySelector("[data-rules]");
+    const rulesModal = root.querySelector("[data-rules-modal]");
+    const rulesClose = root.querySelector("[data-rules-close]");
 
     let secret = [];
     let attempts = 0;
@@ -94,6 +97,7 @@ export const passwordStage = {
         input.maxLength = 1;
         input.dataset.index = String(i);
         input.setAttribute("aria-label", `Chữ số ${i + 1}`);
+        input.readOnly = matchMedia("(hover: none) and (pointer: coarse)").matches;
         input.addEventListener("focus", () => {
           activeIndex = i;
           input.select();
@@ -166,32 +170,36 @@ export const passwordStage = {
       });
       const note = document.createElement("div");
       note.className = "note";
-      note.textContent = `${greens} đúng vị trí`;
+      note.textContent = String(greens);
+      note.title = `${greens} đúng vị trí`;
       row.append(tiles, note);
-      historyEl.prepend(row);
+      historyEl.append(row);
+      row.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+
+    function addKey(label, onClick) {
+      const key = document.createElement("button");
+      key.type = "button";
+      key.className = "key";
+      key.textContent = label;
+      key.addEventListener("click", onClick);
+      keypadEl.appendChild(key);
+      return key;
     }
 
     function createKeypad() {
       keypadEl.innerHTML = "";
-      for (let n = 0; n <= 9; n += 1) {
-        const key = document.createElement("button");
-        key.type = "button";
-        key.className = "key";
-        key.textContent = String(n);
-        key.addEventListener("click", () => {
-          if (won) return;
-          slots()[activeIndex].value = String(n);
-          if (activeIndex < LENGTH - 1) activeIndex += 1;
-          slots()[activeIndex].focus();
-          syncGuessState();
-        });
-        keypadEl.appendChild(key);
+      const typeDigit = (n) => {
+        if (won) return;
+        slots()[activeIndex].value = String(n);
+        if (activeIndex < LENGTH - 1) activeIndex += 1;
+        slots()[activeIndex].focus();
+        syncGuessState();
+      };
+      for (const n of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
+        addKey(String(n), () => typeDigit(n));
       }
-      const del = document.createElement("button");
-      del.type = "button";
-      del.className = "key key-wide";
-      del.textContent = "Xóa";
-      del.addEventListener("click", () => {
+      addKey("Xóa", () => {
         if (won) return;
         const current = slots()[activeIndex];
         if (current.value) current.value = "";
@@ -202,7 +210,8 @@ export const passwordStage = {
         slots()[activeIndex].focus();
         syncGuessState();
       });
-      keypadEl.appendChild(del);
+      addKey("0", () => typeDigit(0));
+      keypadEl.appendChild(submitBtn);
     }
 
     function submitGuess(event) {
@@ -252,7 +261,7 @@ export const passwordStage = {
       createSlots();
       setPlaying(true);
       fillRandom();
-      setPlayStatus(`Lần 1 · ${LENGTH} số ngẫu nhiên đã sẵn sàng`);
+      setPlayStatus(`Lần 1 · ${LENGTH} số ngẫu nhiên`);
       syncGuessState();
       slots()[0].focus();
       ctx.setDebugInfo(() => ({
@@ -262,14 +271,30 @@ export const passwordStage = {
       }));
     }
 
+    function openRules() {
+      rulesModal.hidden = false;
+    }
+
+    function closeRules() {
+      rulesModal.hidden = true;
+    }
+
     createKeypad();
     formEl.addEventListener("submit", submitGuess);
     randomBtn.addEventListener("click", () => {
       fillRandom();
       slots()[0].focus();
     });
-    newGameBtn.addEventListener("click", newGame);
+    newGameBtn.addEventListener("click", () => {
+      closeRules();
+      newGame();
+    });
     replayBtn.addEventListener("click", newGame);
+    rulesBtn.addEventListener("click", openRules);
+    rulesClose.addEventListener("click", closeRules);
+    rulesModal.addEventListener("click", (event) => {
+      if (event.target === rulesModal) closeRules();
+    });
     newGame();
     return () => {};
   },

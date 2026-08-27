@@ -22,6 +22,7 @@
 html,
 body {
   margin: 0;
+  height: 100%;
   min-height: 100%;
 }
 
@@ -35,16 +36,24 @@ body {
 }
 
 .app {
-  width: min(720px, calc(100% - 32px));
+  width: min(720px, calc(100% - 24px));
   margin: 0 auto;
-  padding: 36px 0 64px;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 0 12px;
 }
 
 .hero h1,
 .modal-card h2 {
-  margin: 8px 0 10px;
-  font-size: clamp(2rem, 5vw, 3.1rem);
+  margin: 4px 0 6px;
+  font-size: clamp(1.45rem, 6vw, 2.4rem);
   letter-spacing: -0.04em;
+}
+
+.hero .lede {
+  margin: 0 0 10px;
+  font-size: 0.92rem;
 }
 
 .eyebrow {
@@ -67,7 +76,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 0 0 22px;
+  margin: 0 0 12px;
 }
 
 .stage-pill {
@@ -97,11 +106,40 @@ body {
   border-color: var(--green);
 }
 
+#stage-root {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.playfield {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.play-toolbar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.play-toolbar .status {
+  text-align: center;
+  font-size: 0.86rem;
+  min-width: 0;
+}
+
 .legend {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 22px 0 28px;
+  margin: 16px 0 0;
+  justify-content: center;
 }
 
 .chip {
@@ -150,8 +188,11 @@ body {
 }
 
 .board {
-  min-height: 120px;
-  padding: 18px;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 12px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .history {
@@ -162,7 +203,7 @@ body {
 .guess-row {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
 }
 
@@ -202,18 +243,34 @@ body {
 }
 
 .note {
-  min-width: 92px;
-  padding: 10px 12px;
-  border-radius: 14px;
+  min-width: 52px;
+  padding: 8px 8px;
+  border-radius: 12px;
   text-align: center;
   background: var(--green-dim);
   color: #bbf7d0;
   font-weight: 700;
-  font-size: 0.92rem;
+  font-size: 0.82rem;
 }
 
 .empty-hint {
-  margin: 18px 8px;
+  margin: 12px 6px;
+  text-align: center;
+}
+
+.dock {
+  flex-shrink: 0;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+}
+
+.guess-form {
+  margin: 0;
+  display: grid;
+  gap: 10px;
 }
 
 .panel {
@@ -254,10 +311,6 @@ body {
   color: #fca5a5;
 }
 
-.guess-form {
-  margin-top: 16px;
-}
-
 .slots {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -266,6 +319,8 @@ body {
 
 .slot {
   width: 100%;
+  min-height: 52px;
+  font-size: 1.5rem;
   background: #0b1220;
   color: var(--text);
   text-align: center;
@@ -277,14 +332,10 @@ body {
   border-color: transparent;
 }
 
-.actions,
-.keypad {
+.actions {
   display: flex;
   gap: 10px;
   margin-top: 14px;
-}
-
-.actions {
   justify-content: flex-end;
 }
 
@@ -312,26 +363,37 @@ body {
   border: 1px solid var(--line);
 }
 
-.btn:disabled {
+.btn:disabled,
+.key:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
 
 .keypad {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0;
 }
 
 .key {
-  height: 46px;
+  height: 48px;
   border-radius: 12px;
   background: #0b1220;
   color: var(--text);
   border: 1px solid var(--line);
+  touch-action: manipulation;
+}
+
+.key-guess {
+  background: linear-gradient(180deg, #38bdf8, #0284c7);
+  color: #042433;
+  border: 0;
+  font-weight: 800;
 }
 
 .key-wide {
-  grid-column: span 5;
+  grid-column: span 3;
 }
 
 .modal {
@@ -370,8 +432,13 @@ body {
   font-weight: 800;
 }
 
-.modal-actions {
-  justify-content: center;
+.rules-card {
+  text-align: left;
+}
+
+.rules-card h2,
+.rules-card .eyebrow {
+  text-align: center;
 }
 
 .coming-soon {
@@ -458,16 +525,21 @@ body {
 }
 
 @media (max-width: 640px) {
-  .guess-row {
-    grid-template-columns: 1fr;
+  .hero .lede {
+    display: none;
   }
 
-  .note {
-    width: max-content;
+  .play-toolbar .btn.compact {
+    padding: 8px 10px;
+    font-size: 0.82rem;
   }
 
   .actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
+  }
+
+  .key {
+    height: 52px;
   }
 }
