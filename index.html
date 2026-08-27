@@ -9,11 +9,12 @@
   <body>
     <main class="app">
       <header class="hero">
-        <p class="eyebrow">6 chữ số · xanh / vàng / đỏ</p>
+        <p class="eyebrow">5 chữ số không trùng · xanh / vàng / đỏ</p>
         <h1>Đoán mật khẩu</h1>
         <p class="lede">
-          Lần 1 đã điền ngẫu nhiên 6 số. Xanh = đúng số và đúng vị trí, vàng =
-          đúng số nhưng sai vị trí, đỏ = sai số.
+          Lần 1 đã điền ngẫu nhiên 5 số khác nhau. Xanh = đúng số và đúng vị trí,
+          vàng = đúng số nhưng sai vị trí, đỏ = sai số. Không dùng lại cùng một
+          chữ số.
         </p>
       </header>
 
@@ -21,6 +22,7 @@
         <span class="chip chip-green"><i></i> Xanh · đúng vị trí</span>
         <span class="chip chip-yellow"><i></i> Vàng · sai vị trí</span>
         <span class="chip chip-red"><i></i> Đỏ · sai số</span>
+        <span class="chip chip-rule"><i></i> Không trùng chữ số</span>
       </section>
 
       <section class="board" aria-live="polite">
@@ -32,7 +34,7 @@
         <div class="panel-head">
           <h2>Lần đoán tiếp theo</h2>
           <div class="panel-tools">
-            <p id="status" class="status">Lần 1 · 6 số ngẫu nhiên đã sẵn sàng</p>
+            <p id="status" class="status">Lần 1 · 5 số ngẫu nhiên đã sẵn sàng</p>
             <button type="button" id="new-game-btn" class="btn ghost compact">
               Ván mới
             </button>
@@ -40,7 +42,7 @@
         </div>
 
         <form id="guess-form" class="guess-form" autocomplete="off">
-          <div id="slots" class="slots" role="group" aria-label="6 chữ số"></div>
+          <div id="slots" class="slots" role="group" aria-label="5 chữ số không trùng"></div>
           <div class="actions">
             <button type="button" id="random-btn" class="btn ghost">
               Điền ngẫu nhiên

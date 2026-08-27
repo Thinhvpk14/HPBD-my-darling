@@ -99,6 +99,12 @@ body {
   background: var(--red);
 }
 
+.chip-rule i {
+  box-sizing: border-box;
+  border: 2px solid var(--accent);
+  background: transparent;
+}
+
 .board,
 .panel,
 .modal-card {
@@ -128,7 +134,7 @@ body {
 
 .tiles {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -216,7 +222,7 @@ body {
 
 .slots {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -311,7 +317,7 @@ body {
 
 .win-code {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 6px;
   margin: 18px 0 22px;
 }

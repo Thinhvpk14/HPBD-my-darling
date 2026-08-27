@@ -1,4 +1,4 @@
-const LENGTH = 6;
+const LENGTH = 5;
 
 const historyEl = document.getElementById("history");
 const emptyHintEl = document.getElementById("empty-hint");
@@ -19,18 +19,24 @@ let attempts = 0;
 let won = false;
 let activeIndex = 0;
 
-function randomDigit() {
-  return String(Math.floor(Math.random() * 10));
+function hasUniqueDigits(digits) {
+  return new Set(digits).size === digits.length;
 }
 
 function randomCode() {
-  return Array.from({ length: LENGTH }, randomDigit);
+  const pool = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+  for (let i = pool.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, LENGTH);
 }
 
 function codeFromUrl() {
   const raw = new URLSearchParams(location.search).get("secret") || "";
   const digits = raw.replace(/\D/g, "").slice(0, LENGTH).split("");
-  return digits.length === LENGTH ? digits : null;
+  if (digits.length !== LENGTH || !hasUniqueDigits(digits)) return null;
+  return digits;
 }
 
 function evaluateGuess(guess) {
@@ -98,10 +104,29 @@ function isCompleteGuess(guess) {
   return guess.length === LENGTH && guess.every((digit) => /^\d$/.test(digit));
 }
 
+function otherValues(exceptIndex) {
+  return slots()
+    .map((slot, index) => (index === exceptIndex ? "" : slot.value))
+    .filter(Boolean);
+}
+
+function applyDigit(index, digit) {
+  if (!/^\d$/.test(digit)) return false;
+  if (otherValues(index).includes(digit)) {
+    statusEl.textContent = "Mỗi chữ số chỉ được dùng một lần.";
+    return false;
+  }
+  slots()[index].value = digit;
+  return true;
+}
+
 function onSlotInput(event) {
+  const index = Number(event.target.dataset.index);
   const digit = event.target.value.replace(/\D/g, "").slice(-1);
-  event.target.value = digit;
-  if (digit && activeIndex < LENGTH - 1) {
+  event.target.value = "";
+  if (!digit) return;
+  if (!applyDigit(index, digit)) return;
+  if (activeIndex < LENGTH - 1) {
     activeIndex += 1;
     slots()[activeIndex].focus();
   }
@@ -126,8 +151,15 @@ function onPaste(event) {
   if (!text) return;
   const start = Number(event.target.dataset.index);
   const values = currentGuess();
-  for (let i = 0; i < text.length && start + i < LENGTH; i += 1) {
-    values[start + i] = text[i];
+  for (let i = start; i < LENGTH; i += 1) values[i] = "";
+  const used = new Set(values.filter(Boolean));
+  let offset = 0;
+  for (let i = 0; i < text.length && start + offset < LENGTH; i += 1) {
+    const digit = text[i];
+    if (used.has(digit)) continue;
+    used.add(digit);
+    values[start + offset] = digit;
+    offset += 1;
   }
   slots().forEach((slot, index) => {
     slot.value = values[index] || "";
@@ -165,8 +197,7 @@ function createKeypad() {
     key.textContent = String(n);
     key.addEventListener("click", () => {
       if (won) return;
-      const target = slots()[activeIndex];
-      target.value = String(n);
+      if (!applyDigit(activeIndex, String(n))) return;
       if (activeIndex < LENGTH - 1) activeIndex += 1;
       slots()[activeIndex].focus();
     });
@@ -206,6 +237,10 @@ function submitGuess(event) {
   const guess = currentGuess();
   if (!isCompleteGuess(guess)) {
     statusEl.textContent = `Hãy điền đủ ${LENGTH} chữ số.`;
+    return;
+  }
+  if (!hasUniqueDigits(guess)) {
+    statusEl.textContent = "Dãy số không được trùng chữ số.";
     return;
   }
 
