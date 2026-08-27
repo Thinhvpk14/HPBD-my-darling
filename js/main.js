@@ -1,6 +1,6 @@
-import { createEngine } from "./engine.js?v=10";
-import { passwordStage } from "./stages/password-guess.js?v=10";
-import { comingSoonStage } from "./stages/coming-soon.js?v=10";
+import { createEngine } from "./engine.js?v=11";
+import { passwordStage } from "./stages/password-guess.js?v=11";
+import { comingSoonStage } from "./stages/coming-soon.js?v=11";
 
 const { start, api } = createEngine({
   stages: [
@@ -10,4 +10,5 @@ const { start, api } = createEngine({
 });
 
 window.HBD = api;
+document.getElementById("app-version").textContent = `v${window.APP_VERSION}`;
 start();

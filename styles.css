@@ -51,6 +51,21 @@ body {
   letter-spacing: -0.04em;
 }
 
+.hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.app-version {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
 .hero .lede {
   margin: 0 0 10px;
   font-size: 0.92rem;
@@ -191,7 +206,7 @@ body {
   flex: 1;
   min-height: 0;
   overflow: auto;
-  padding: 12px;
+  padding: 8px 12px;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -201,10 +216,7 @@ body {
 }
 
 .guess-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 6px;
-  align-items: center;
+  display: block;
 }
 
 .tiles {
@@ -215,7 +227,7 @@ body {
 
 .history .tiles {
   width: 100%;
-  gap: 4px;
+  gap: 8px;
 }
 
 .tile,

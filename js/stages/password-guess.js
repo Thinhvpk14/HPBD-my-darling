@@ -3,7 +3,7 @@ import {
   hasDuplicateDigits,
   hasUniqueDigits,
   uniqueDigitCode,
-} from "../shared/mastermind.js?v=10";
+} from "../shared/mastermind.js?v=11";
 
 const LENGTH = 5;
 
@@ -156,7 +156,7 @@ export const passwordStage = {
       syncGuessState();
     }
 
-    function renderHistoryRow(guess, marks, greens) {
+    function renderHistoryRow(guess, marks) {
       const row = document.createElement("div");
       row.className = "guess-row";
       const tiles = document.createElement("div");
@@ -168,11 +168,7 @@ export const passwordStage = {
         tile.style.animationDelay = `${index * 40}ms`;
         tiles.appendChild(tile);
       });
-      const note = document.createElement("div");
-      note.className = "note";
-      note.textContent = String(greens);
-      note.title = `${greens} đúng vị trí`;
-      row.append(tiles, note);
+      row.append(tiles);
       historyEl.append(row);
       row.scrollIntoView({ block: "nearest", behavior: "smooth" });
     }
@@ -231,7 +227,7 @@ export const passwordStage = {
       const { marks, greens } = evaluateGuess(secret, guess);
       attempts += 1;
       emptyHintEl.hidden = true;
-      renderHistoryRow(guess, marks, greens);
+      renderHistoryRow(guess, marks);
       setPlayStatus(`Lần ${attempts} · ${greens}/${LENGTH} đúng vị trí`);
       if (greens === LENGTH) {
         won = true;

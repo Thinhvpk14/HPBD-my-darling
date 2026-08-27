@@ -7,9 +7,9 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <title>Hành trình giải đố</title>
-    <link rel="stylesheet" href="styles.css?v=10" />
+    <link rel="stylesheet" href="styles.css?v=11" />
     <script>
-      window.APP_VERSION = "10";
+      window.APP_VERSION = "11";
       fetch("version.json?t=" + Date.now(), { cache: "no-store" })
         .then((res) => res.json())
         .then((data) => {
@@ -26,7 +26,10 @@
   <body>
     <main class="app">
       <header class="hero">
-        <p id="campaign-eyebrow" class="eyebrow">Màn 1 / 2</p>
+        <div class="hero-top">
+          <p id="campaign-eyebrow" class="eyebrow">Màn 1 / 2</p>
+          <p id="app-version" class="app-version"></p>
+        </div>
         <h1 id="campaign-title">Đoán mật khẩu</h1>
         <p id="campaign-lede" class="lede"></p>
       </header>
@@ -125,6 +128,6 @@
       </section>
     </template>
 
-    <script type="module" src="js/main.js?v=10"></script>
+    <script type="module" src="js/main.js?v=11"></script>
   </body>
 </html>
