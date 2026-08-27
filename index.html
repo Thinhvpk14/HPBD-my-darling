@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đoán mật khẩu</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="hero">
+        <p class="eyebrow">6 chữ số · xanh / vàng / đỏ</p>
+        <h1>Đoán mật khẩu</h1>
+        <p class="lede">
+          Lần 1 đã điền ngẫu nhiên 6 số. Xanh = đúng số và đúng vị trí, vàng =
+          đúng số nhưng sai vị trí, đỏ = sai số.
+        </p>
+      </header>
+
+      <section class="legend" aria-label="Chú thích màu">
+        <span class="chip chip-green"><i></i> Xanh · đúng vị trí</span>
+        <span class="chip chip-yellow"><i></i> Vàng · sai vị trí</span>
+        <span class="chip chip-red"><i></i> Đỏ · sai số</span>
+      </section>
+
+      <section class="board" aria-live="polite">
+        <div id="history" class="history"></div>
+        <p id="empty-hint" class="empty-hint">Chưa có lần đoán nào.</p>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Lần đoán tiếp theo</h2>
+          <div class="panel-tools">
+            <p id="status" class="status">Lần 1 · 6 số ngẫu nhiên đã sẵn sàng</p>
+            <button type="button" id="new-game-btn" class="btn ghost compact">
+              Ván mới
+            </button>
+          </div>
+        </div>
+
+        <form id="guess-form" class="guess-form" autocomplete="off">
+          <div id="slots" class="slots" role="group" aria-label="6 chữ số"></div>
+          <div class="actions">
+            <button type="button" id="random-btn" class="btn ghost">
+              Điền ngẫu nhiên
+            </button>
+            <button type="submit" id="submit-btn" class="btn primary">
+              Đoán
+            </button>
+          </div>
+        </form>
+
+        <div id="keypad" class="keypad" aria-label="Bàn phím số"></div>
+      </section>
+
+      <div id="win-modal" class="modal" hidden>
+        <div class="modal-card">
+          <p class="eyebrow">Mở khóa thành công</p>
+          <h2>Đúng mật khẩu!</h2>
+          <p id="win-text" class="lede"></p>
+          <div id="win-code" class="win-code"></div>
+          <button type="button" id="replay-btn" class="btn primary">
+            Chơi ván mới
+          </button>
+        </div>
+      </div>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
