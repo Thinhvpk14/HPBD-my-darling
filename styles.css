@@ -468,6 +468,249 @@ body {
   padding: 28px;
 }
 
+.cr-play {
+  position: relative;
+}
+
+.cr-start,
+.cr-game {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cr-start[hidden],
+.cr-game[hidden] {
+  display: none;
+}
+
+.cr-start {
+  justify-content: center;
+  text-align: center;
+  padding: 16px 8px 24px;
+}
+
+.cr-orb {
+  width: min(42vw, 180px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  margin-bottom: 16px;
+  background:
+    conic-gradient(#ff4d5a 0 120deg, #4d8dff 120deg 240deg, #ffd84d 240deg 360deg);
+  mask: radial-gradient(circle, transparent 42%, #000 44%);
+  filter: drop-shadow(0 0 18px rgba(77, 141, 255, 0.35));
+}
+
+.cr-play-btn {
+  min-width: 180px;
+  min-height: 52px;
+  font-size: 1.15rem;
+  margin-top: 12px;
+}
+
+.cr-hud {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.cr-level,
+.cr-progress,
+.cr-budget {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.cr-hint {
+  margin: 6px 0 0;
+  color: var(--accent);
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.cr-stage {
+  position: relative;
+  width: min(78vw, 420px);
+  flex: 1;
+  display: grid;
+  place-items: center;
+  margin: 4px 0;
+}
+
+.cr-svg {
+  width: 100%;
+  height: auto;
+  max-height: min(68dvh, 420px);
+  overflow: visible;
+}
+
+.cr-ring {
+  transform-box: view-box;
+  transform-origin: 100px 100px;
+}
+
+.cr-ring.is-idle {
+  opacity: 0.42;
+}
+
+.cr-ring.is-active {
+  filter: url(#ring-glow);
+  animation: cr-pulse 1.6s ease-in-out infinite;
+}
+
+.cr-ring.is-hidden {
+  opacity: 0.08;
+}
+
+.cr-ring.is-done,
+.cr-ring.is-unlocking {
+  transform-origin: 100px 100px;
+  animation: cr-open 0.5s ease-in forwards;
+}
+
+.cr-core {
+  fill: #10182b;
+  stroke: #dbe7ff;
+  stroke-width: 1.4;
+}
+
+.cr-arm {
+  stroke: rgba(219, 231, 255, 0.55);
+  stroke-width: 1.2;
+}
+
+.cr-dot {
+  stroke: rgba(255, 255, 255, 0.45);
+  stroke-width: 0.8;
+  filter: drop-shadow(0 0 2px currentColor);
+}
+
+#cr-hub {
+  transform-box: view-box;
+  transform-origin: 100px 100px;
+}
+
+#cr-hub.is-shake {
+  animation: cr-shake 0.35s ease;
+}
+
+#cr-hub.is-pulse {
+  animation: cr-hub-pulse 0.45s ease;
+}
+
+.cr-sparks {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+}
+
+.cr-spark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: cr-spark 0.55s ease-out forwards;
+}
+
+.cr-feedback {
+  position: absolute;
+  bottom: 4%;
+  margin: 0;
+  opacity: 0;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #fca5a5;
+  pointer-events: none;
+}
+
+.cr-feedback.is-on {
+  animation: cr-fade 0.7s ease;
+}
+
+.cr-controls {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.cr-ctrl {
+  min-height: 52px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #0b1220;
+  color: var(--text);
+  font: inherit;
+  font-weight: 800;
+  touch-action: manipulation;
+}
+
+.cr-unlock {
+  grid-column: 1 / -1;
+  background: linear-gradient(180deg, #38bdf8, #0284c7);
+  color: #042433;
+  border: 0;
+  min-height: 56px;
+}
+
+.cr-ctrl.is-press {
+  transform: scale(0.97);
+  filter: brightness(1.12);
+}
+
+.cr-progress-lg {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+@keyframes cr-pulse {
+  50% {
+    opacity: 1;
+    filter: url(#ring-glow) brightness(1.12);
+  }
+}
+
+@keyframes cr-open {
+  to {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes cr-shake {
+  20% { transform: rotate(var(--rot, 0deg)) translateX(-5px); }
+  40% { transform: rotate(var(--rot, 0deg)) translateX(5px); }
+  60% { transform: rotate(var(--rot, 0deg)) translateX(-3px); }
+  80% { transform: rotate(var(--rot, 0deg)) translateX(3px); }
+}
+
+@keyframes cr-hub-pulse {
+  50% { transform: rotate(var(--rot, 0deg)) scale(1.08); }
+}
+
+@keyframes cr-spark {
+  to {
+    transform: translate(var(--dx), var(--dy));
+    opacity: 0;
+  }
+}
+
+@keyframes cr-fade {
+  0%, 70% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 .coming-soon h2 {
   margin: 8px 0 12px;
 }

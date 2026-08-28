@@ -3,7 +3,7 @@ import {
   hasDuplicateDigits,
   hasUniqueDigits,
   uniqueDigitCode,
-} from "../shared/mastermind.js?v=11";
+} from "../shared/mastermind.js?v=12";
 
 const LENGTH = 5;
 

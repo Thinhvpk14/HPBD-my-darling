@@ -1,11 +1,11 @@
-import { createEngine } from "./engine.js?v=11";
-import { passwordStage } from "./stages/password-guess.js?v=11";
-import { comingSoonStage } from "./stages/coming-soon.js?v=11";
+import { createEngine } from "./engine.js?v=12";
+import { passwordStage } from "./stages/password-guess.js?v=12";
+import { colorRingsStage } from "./stages/color-rings.js?v=12";
 
 const { start, api } = createEngine({
   stages: [
     passwordStage,
-    comingSoonStage,
+    colorRingsStage,
   ],
 });
 
