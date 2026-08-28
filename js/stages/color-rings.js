@@ -1,11 +1,11 @@
-import { createAudio } from "./color-rings/audio.js?v=12";
-import { generateLevel, isMatch } from "./color-rings/generate.js?v=12";
-import { burst, drawPuzzle } from "./color-rings/render.js?v=12";
+import { createAudio } from "./color-rings/audio.js?v=17";
+import { generateLevel, isMatch, stepDegrees } from "./color-rings/generate.js?v=17";
+import { burst, drawPuzzle } from "./color-rings/render.js?v=17";
 
 export const colorRingsStage = {
   id: "color-rings",
   title: "Khóa ba màu",
-  lede: "Xoay tâm khớp 3 màu, rồi mở từng vòng từ trong ra ngoài.",
+  lede: "Xoay chấm giữa khớp 3 màu, rồi mở từng vòng từ trong ra ngoài.",
   templateId: "tpl-color-rings",
   mount(root, ctx) {
     const startScreen = root.querySelector("[data-start]");
@@ -40,8 +40,8 @@ export const colorRingsStage = {
     let rotating = false;
 
     const tutorials = [
-      "Xoay tâm cho khớp màu",
-      "Ba màu phải trùng vòng đang sáng",
+      "Xoay chấm giữa cho khớp màu",
+      "Mỗi màu trên chấm phải trùng cung đang sáng",
       "Bấm MỞ KHÓA",
     ];
 
@@ -52,12 +52,16 @@ export const colorRingsStage = {
       setFeedback.tid = setTimeout(() => feedbackEl.classList.remove("is-on"), 700);
     }
 
+    function segmentN() {
+      return puzzle?.segments ?? puzzle?.rings?.[0]?.length ?? 12;
+    }
+
     function applyHubRotation(animate) {
       const hub = svg.querySelector("#cr-hub");
       if (!hub) return;
-      const deg = `${rotation * 120}deg`;
+      const deg = `${rotation * stepDegrees(segmentN())}deg`;
       hub.style.setProperty("--rot", deg);
-      hub.style.transition = animate ? "transform 0.3s ease-out" : "none";
+      hub.style.transition = animate ? "transform 0.22s ease-out" : "none";
       hub.style.transformOrigin = "100px 100px";
       hub.style.transform = `rotate(${deg})`;
     }
@@ -94,6 +98,8 @@ export const colorRingsStage = {
       ctx.setDebugInfo(() => ({
         level: levelNo,
         rotation,
+        segments: segmentN(),
+        step: stepDegrees(segmentN()),
         active,
         match: isMatch(puzzle.center, rotation, puzzle.rings[active]),
         needed: puzzle.needed,
@@ -126,7 +132,8 @@ export const colorRingsStage = {
       audio.unlock();
       audio.rotate();
       rotating = true;
-      rotation = (rotation + dir + 3) % 3;
+      const n = segmentN();
+      rotation = (rotation + dir + n) % n;
       rotatesUsed += 1;
       if (tutorialStep === 0) tutorialStep = 1;
       applyHubRotation(true);
@@ -142,11 +149,13 @@ export const colorRingsStage = {
         ctx.setDebugInfo(() => ({
           level: levelNo,
           rotation,
+          segments: n,
+          step: stepDegrees(n),
           active,
           match: isMatch(puzzle.center, rotation, puzzle.rings[active]),
           needed: puzzle.needed,
         }));
-      }, 320);
+      }, 240);
     }
 
     function unlock() {

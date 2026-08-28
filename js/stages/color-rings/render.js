@@ -1,13 +1,16 @@
-import { COLORS } from "./colors.js?v=12";
+import { COLORS } from "./colors.js?v=17";
 
 const CX = 100;
 const CY = 100;
+const HUB_R = 12;
+const DOT_R = 5.6;
+const DOT_DIST = 16.2;
 const RINGS = [
-  [30, 42],
-  [46, 58],
-  [62, 74],
-  [78, 90],
-  [94, 106],
+  [32, 40],
+  [46, 54],
+  [60, 68],
+  [74, 82],
+  [88, 96],
 ];
 
 function polar(radius, deg) {
@@ -15,12 +18,13 @@ function polar(radius, deg) {
   return [CX + radius * Math.cos(rad), CY + radius * Math.sin(rad)];
 }
 
-function sectorPath(r0, r1, a0, a1) {
-  const [x0, y0] = polar(r1, a0);
-  const [x1, y1] = polar(r1, a1);
-  const [x2, y2] = polar(r0, a1);
-  const [x3, y3] = polar(r0, a0);
-  return `M ${x0} ${y0} A ${r1} ${r1} 0 0 1 ${x1} ${y1} L ${x2} ${y2} A ${r0} ${r0} 0 0 0 ${x3} ${y3} Z`;
+function arcPath(radius, a0, a1) {
+  let sweep = a1 - a0;
+  while (sweep < 0) sweep += 360;
+  const large = sweep > 180 ? 1 : 0;
+  const [x0, y0] = polar(radius, a0);
+  const [x1, y1] = polar(radius, a1);
+  return `M ${x0} ${y0} A ${radius} ${radius} 0 ${large} 1 ${x1} ${y1}`;
 }
 
 function svgEl(name, attrs) {
@@ -29,9 +33,48 @@ function svgEl(name, attrs) {
   return node;
 }
 
+function colorRuns(ring) {
+  const n = ring.length;
+  const gap = ring.findIndex((cell) => cell == null);
+  const origin = gap === -1 ? 0 : gap;
+  const runs = [];
+  let i = 0;
+  while (i < n) {
+    const color = ring[(origin + i) % n];
+    if (color == null) {
+      i += 1;
+      continue;
+    }
+    let count = 1;
+    while (count + i < n && ring[(origin + i + count) % n] === color) count += 1;
+    runs.push({ color, start: (origin + i) % n, count });
+    i += count;
+  }
+  if (
+    origin === 0 &&
+    ring[0] != null &&
+    ring[0] === ring[n - 1] &&
+    runs.length >= 2
+  ) {
+    const last = runs.pop();
+    runs[0] = {
+      color: runs[0].color,
+      start: last.start,
+      count: last.count + runs[0].count,
+    };
+  }
+  return runs;
+}
+
+function runAngles(start, count, n) {
+  const step = 360 / n;
+  return [start * step - step / 2, (start + count) * step - step / 2];
+}
+
 export function drawPuzzle(svg, { rings, center, active, completed }) {
   svg.innerHTML = "";
   svg.setAttribute("viewBox", "-14 -14 228 228");
+  const n = rings[0].length;
 
   const defs = svgEl("defs", {});
   defs.innerHTML = `
@@ -52,39 +95,77 @@ export function drawPuzzle(svg, { rings, center, active, completed }) {
     else group.classList.add("is-idle");
 
     const [r0, r1] = RINGS[ringIndex];
-    colors.forEach((color, i) => {
-      const a0 = i * 120 - 60;
-      const a1 = a0 + 118;
-      const path = svgEl("path", {
-        d: sectorPath(r0, r1, a0, a1),
-        fill: COLORS[color],
-        class: "cr-sector",
-      });
-      group.appendChild(path);
+    const midR = (r0 + r1) / 2;
+    const strokeW = r1 - r0;
+    group.appendChild(
+      svgEl("circle", {
+        cx: CX,
+        cy: CY,
+        r: String(midR),
+        class: "cr-track",
+        "stroke-width": String(strokeW * 0.92),
+      })
+    );
+    colorRuns(colors).forEach((run) => {
+      const [a0, a1] = runAngles(run.start, run.count, n);
+      if (run.count >= n) {
+        group.appendChild(
+          svgEl("circle", {
+            cx: CX,
+            cy: CY,
+            r: String(midR),
+            fill: "none",
+            stroke: COLORS[run.color],
+            "stroke-width": String(strokeW),
+            class: "cr-dash",
+          })
+        );
+        return;
+      }
+      group.appendChild(
+        svgEl("path", {
+          d: arcPath(midR, a0, a1),
+          fill: "none",
+          stroke: COLORS[run.color],
+          "stroke-width": String(strokeW),
+          "stroke-linecap": "butt",
+          class: "cr-dash",
+        })
+      );
     });
     svg.appendChild(group);
   });
 
   const hub = svgEl("g", { class: "cr-hub", id: "cr-hub" });
-  hub.appendChild(svgEl("circle", { cx: CX, cy: CY, r: "11", class: "cr-core" }));
-  center.forEach((color, i) => {
+  center.forEach((_, i) => {
     const angle = i * 120;
-    const [x, y] = polar(18, angle);
-    const [lx, ly] = polar(11, angle);
+    const [x0, y0] = polar(HUB_R + DOT_R, angle);
+    const [x1, y1] = polar(100, angle);
     hub.appendChild(
       svgEl("line", {
-        x1: CX,
-        y1: CY,
-        x2: lx,
-        y2: ly,
-        class: "cr-arm",
+        x1: String(x0),
+        y1: String(y0),
+        x2: String(x1),
+        y2: String(y1),
+        class: "cr-guide",
       })
     );
+  });
+  hub.appendChild(
+    svgEl("circle", {
+      cx: CX,
+      cy: CY,
+      r: String(HUB_R),
+      class: "cr-core",
+    })
+  );
+  center.forEach((color, i) => {
+    const [x, y] = polar(DOT_DIST, i * 120);
     hub.appendChild(
       svgEl("circle", {
-        cx: x,
-        cy: y,
-        r: "6.5",
+        cx: String(x),
+        cy: String(y),
+        r: String(DOT_R),
         fill: COLORS[color],
         class: "cr-dot",
       })

@@ -497,8 +497,14 @@ body {
   aspect-ratio: 1;
   border-radius: 50%;
   margin-bottom: 16px;
-  background:
-    conic-gradient(#ff4d5a 0 120deg, #4d8dff 120deg 240deg, #ffd84d 240deg 360deg);
+  background: repeating-conic-gradient(
+    #ff4d5a 0 14deg,
+    transparent 14deg 20deg,
+    #4d8dff 20deg 34deg,
+    transparent 34deg 40deg,
+    #ffd84d 40deg 54deg,
+    transparent 54deg 60deg
+  );
   mask: radial-gradient(circle, transparent 42%, #000 44%);
   filter: drop-shadow(0 0 18px rgba(77, 141, 255, 0.35));
 }
@@ -556,6 +562,18 @@ body {
   transform-origin: 100px 100px;
 }
 
+.cr-track {
+  fill: none;
+  stroke: rgba(219, 231, 255, 0.14);
+  stroke-width: 7.2;
+}
+
+.cr-dash {
+  fill: none;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+}
+
 .cr-ring.is-idle {
   opacity: 0.42;
 }
@@ -577,19 +595,18 @@ body {
 
 .cr-core {
   fill: #10182b;
-  stroke: #dbe7ff;
-  stroke-width: 1.4;
-}
-
-.cr-arm {
-  stroke: rgba(219, 231, 255, 0.55);
-  stroke-width: 1.2;
+  stroke: rgba(219, 231, 255, 0.92);
+  stroke-width: 1.6;
 }
 
 .cr-dot {
-  stroke: rgba(255, 255, 255, 0.45);
-  stroke-width: 0.8;
-  filter: drop-shadow(0 0 2px currentColor);
+  stroke: #0b1220;
+  stroke-width: 0.9;
+}
+
+.cr-guide {
+  stroke: rgba(219, 231, 255, 0.22);
+  stroke-width: 1;
 }
 
 #cr-hub {
