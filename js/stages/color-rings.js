@@ -1,6 +1,6 @@
-import { createAudio } from "./color-rings/audio.js?v=36";
-import { generateLevel, isMatch, RING_COUNT, stepDegrees } from "./color-rings/generate.js?v=36";
-import { burst, drawPuzzle, moveHubToRing } from "./color-rings/render.js?v=36";
+import { createAudio } from "./color-rings/audio.js?v=39";
+import { generateLevel, isMatch, RING_COUNT, stepDegrees } from "./color-rings/generate.js?v=39";
+import { burst, drawPuzzle, moveHubToRing } from "./color-rings/render.js?v=39";
 
 export const colorRingsStage = {
   id: "color-rings",
@@ -69,7 +69,7 @@ export const colorRingsStage = {
       if (!spinner) return;
       const deg = `${spin * stepDegrees(segmentN())}deg`;
       spinner.style.setProperty("--rot", deg);
-      spinner.style.transition = animate ? "transform 0.068s ease-out" : "none";
+      spinner.style.transition = animate ? "transform 0.034s ease-out" : "none";
       spinner.style.transformOrigin = "100px 100px";
       spinner.style.transform = `rotate(${deg})`;
     }

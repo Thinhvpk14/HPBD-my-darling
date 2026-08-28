@@ -782,8 +782,33 @@ body {
 }
 
 @media (max-width: 640px) {
+  .app {
+    width: 100%;
+    padding: 4px 0 0;
+  }
+
+  .hero {
+    padding: 0 10px;
+  }
+
+  .hero h1 {
+    font-size: 1.15rem;
+    margin: 0 0 2px;
+  }
+
   .hero .lede {
     display: none;
+  }
+
+  .stage-nav {
+    margin: 0 0 4px;
+    padding: 0 10px;
+    gap: 6px;
+  }
+
+  .stage-pill {
+    padding: 6px 10px;
+    font-size: 0.8rem;
   }
 
   .play-toolbar .btn.compact {
@@ -798,5 +823,37 @@ body {
 
   .key {
     height: 52px;
+  }
+
+  .cr-hud,
+  .cr-hint,
+  .cr-controls {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .cr-hint {
+    min-height: 1em;
+    margin: 2px 0 0;
+    font-size: 0.78rem;
+  }
+
+  .cr-stage {
+    margin: 0;
+    width: 100%;
+    overflow: visible;
+  }
+
+  .cr-ctrl {
+    min-height: 46px;
+  }
+
+  .cr-unlock {
+    min-height: 48px;
+  }
+
+  .cr-controls {
+    gap: 6px;
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
   }
 }

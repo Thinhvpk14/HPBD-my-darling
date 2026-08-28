@@ -1,4 +1,4 @@
-import { COLORS } from "./colors.js?v=36";
+import { COLORS } from "./colors.js?v=39";
 
 const CX = 100;
 const CY = 100;
@@ -78,38 +78,23 @@ export function ringMid(index) {
   return (r0 + r1) / 2;
 }
 
-function hubDotRadius(count) {
-  return count >= 10 ? 3.2 : count >= 7 ? 3.8 : count >= 5 ? 4.6 : DOT_R;
-}
-
-function lockedDotRadius(count) {
-  if (count >= 10) return 5.2;
-  if (count >= 7) return 6;
-  if (count >= 5) return 6.6;
-  return 7.2;
-}
-
-function dotRadius(count, onRing) {
-  return onRing ? lockedDotRadius(count) : hubDotRadius(count);
-}
-
-function markerDist(ringIndex, count) {
+function markerDist(ringIndex) {
   if (ringIndex == null) return DOT_DIST;
-  return ringMid(ringIndex) + LOCKED_STROKE / 2 + lockedDotRadius(count);
+  return ringMid(ringIndex) + LOCKED_STROKE / 2 + DOT_R;
 }
 
 function setDot(el, x, y, r, color) {
   el.setAttribute("cx", String(x));
   el.setAttribute("cy", String(y));
-  el.setAttribute("r", String(r));
+  el.setAttribute("r", String(r ?? DOT_R));
   if (color) el.setAttribute("fill", COLORS[color]);
 }
 
-function createDot(x, y, color, count, extraClass, onRing) {
+function createDot(x, y, color, extraClass) {
   return svgEl("circle", {
     cx: String(x),
     cy: String(y),
-    r: String(dotRadius(count, onRing)),
+    r: String(DOT_R),
     fill: COLORS[color],
     class: extraClass || "cr-dot",
   });
@@ -117,8 +102,8 @@ function createDot(x, y, color, count, extraClass, onRing) {
 
 export function drawPuzzle(svg, { rings, hub, n, active, completed }) {
   svg.innerHTML = "";
-  const outer = ringBand(rings.length - 1)[1] + 16;
-  const pad = 18;
+  const outer = ringBand(rings.length - 1)[1] + 14;
+  const pad = 4;
   const origin = CX - outer - pad;
   const size = (outer + pad) * 2;
   svg.setAttribute("viewBox", `${origin} ${origin} ${size} ${size}`);
@@ -210,9 +195,8 @@ function ensureSpinner(svg) {
 export function paintHub(svg, { hub, n, step, ringIndex }) {
   const node = ensureSpinner(svg);
   node.replaceChildren();
-  const count = hub.colors.length;
   const onRing = ringIndex != null;
-  const dist = markerDist(ringIndex, count);
+  const dist = markerDist(ringIndex);
   const turn = step ?? 360 / n;
 
   node.appendChild(
@@ -226,7 +210,7 @@ export function paintHub(svg, { hub, n, step, ringIndex }) {
   hub.colors.forEach((color, i) => {
     const [x, y] = polar(dist, hub.slots[i] * turn);
     const className = onRing ? "cr-dot is-on-ring" : "cr-dot";
-    node.appendChild(createDot(x, y, color, count, className, onRing));
+    node.appendChild(createDot(x, y, color, className));
   });
 }
 
@@ -237,10 +221,9 @@ export function moveHubToRing(svg, { hub, n, ringIndex, fromCenter }) {
     return;
   }
   const turn = 360 / n;
-  const count = hub.colors.length;
-  const r = lockedDotRadius(count);
-  const dist = markerDist(ringIndex, count);
-  const fromDist = fromCenter || ringIndex <= 0 ? DOT_DIST : markerDist(ringIndex - 1, count);
+  const r = DOT_R;
+  const dist = markerDist(ringIndex);
+  const fromDist = fromCenter || ringIndex <= 0 ? DOT_DIST : markerDist(ringIndex - 1);
   const existing = [...node.querySelectorAll(".cr-dot")];
 
   hub.colors.forEach((color, i) => {
@@ -248,7 +231,7 @@ export function moveHubToRing(svg, { hub, n, ringIndex, fromCenter }) {
     let dot = existing[i];
     if (!dot) {
       const [x0, y0] = polar(fromDist, hub.slots[i] * turn);
-      dot = createDot(x0, y0, color, count, "cr-dot is-new is-on-ring", true);
+      dot = createDot(x0, y0, color, "cr-dot is-new is-on-ring");
       node.appendChild(dot);
       requestAnimationFrame(() => {
         setDot(dot, x, y, r, color);
