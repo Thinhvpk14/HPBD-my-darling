@@ -1,4 +1,4 @@
-import { COLOR_KEYS } from "./colors.js?v=39";
+import { COLOR_KEYS } from "./colors.js?v=41";
 
 export const RING_COUNT = 10;
 

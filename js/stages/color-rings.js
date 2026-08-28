@@ -1,6 +1,6 @@
-import { createAudio } from "./color-rings/audio.js?v=39";
-import { generateLevel, isMatch, RING_COUNT, stepDegrees } from "./color-rings/generate.js?v=39";
-import { burst, drawPuzzle, moveHubToRing } from "./color-rings/render.js?v=39";
+import { createAudio } from "./color-rings/audio.js?v=41";
+import { generateLevel, isMatch, RING_COUNT, stepDegrees } from "./color-rings/generate.js?v=41";
+import { burst, drawPuzzle, moveHubToRing } from "./color-rings/render.js?v=41";
 
 export const colorRingsStage = {
   id: "color-rings",

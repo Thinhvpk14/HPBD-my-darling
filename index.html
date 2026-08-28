@@ -7,9 +7,9 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <title>Hành trình giải đố</title>
-    <link rel="stylesheet" href="styles.css?v=39" />
+    <link rel="stylesheet" href="styles.css?v=41" />
     <script>
-      window.APP_VERSION = "39";
+      window.APP_VERSION = "41";
       fetch("version.json?t=" + Date.now(), { cache: "no-store" })
         .then((res) => res.json())
         .then((data) => {
@@ -138,6 +138,59 @@
       </div>
     </template>
 
-    <script type="module" src="js/main.js?v=39"></script>
+    <template id="tpl-word-memory">
+      <div class="playfield wm-play">
+        <section data-start class="wm-start">
+          <div class="wm-mark" aria-hidden="true">Aa</div>
+          <p class="eyebrow">Màn 3</p>
+          <h2>Từ mới hay cũ?</h2>
+          <p class="lede">30 từ trang sức · mỹ phẩm · thời trang. Trong 30 giây, chọn đúng 30 lần.</p>
+          <button type="button" data-play-btn class="btn primary cr-play-btn">Play</button>
+        </section>
+
+        <section data-play class="wm-game" hidden>
+          <div class="wm-hud">
+            <p data-clock class="wm-clock">30.0s</p>
+            <p data-score class="wm-score">0 / 30</p>
+          </div>
+          <div class="wm-timer" aria-hidden="true">
+            <div data-timer-fill class="wm-timer-fill"></div>
+          </div>
+          <div data-stage class="wm-stage">
+            <p data-word class="wm-word">Nhẫn</p>
+            <p data-feedback class="wm-feedback"></p>
+          </div>
+          <div class="wm-controls">
+            <button type="button" data-new class="wm-btn wm-btn-new">Từ mới</button>
+            <button type="button" data-old class="wm-btn wm-btn-old">Đã xuất hiện</button>
+          </div>
+        </section>
+
+        <div data-win class="modal" hidden>
+          <div class="modal-card">
+            <p class="eyebrow">Hoàn thành</p>
+            <h2>30 / 30 đúng!</h2>
+            <p class="lede">Bạn nhận ra đúng từ mới và từ đã xuất hiện.</p>
+            <div class="actions modal-actions">
+              <button type="button" data-replay-win class="btn ghost">Chơi lại</button>
+              <button type="button" data-next class="btn primary">Màn tiếp theo</button>
+            </div>
+          </div>
+        </div>
+
+        <div data-fail class="modal" hidden>
+          <div class="modal-card">
+            <p class="eyebrow">Hết giờ</p>
+            <h2>Chưa đủ 30 lần đúng</h2>
+            <p data-fail-score class="cr-progress-lg">0 / 30</p>
+            <div class="actions modal-actions">
+              <button type="button" data-replay-fail class="btn primary">Thử lại</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <script type="module" src="js/main.js?v=41"></script>
   </body>
 </html>
