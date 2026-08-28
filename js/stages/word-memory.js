@@ -1,5 +1,5 @@
-import { createAudio } from "./color-rings/audio.js?v=41";
-import { GOAL, DURATION_MS, createRound } from "./word-memory/logic.js?v=41";
+import { createAudio } from "./color-rings/audio.js?v=43";
+import { GOAL, DURATION_MS, createRound } from "./word-memory/logic.js?v=43";
 
 export const wordMemoryStage = {
   id: "word-memory",

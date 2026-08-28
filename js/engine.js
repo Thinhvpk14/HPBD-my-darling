@@ -55,6 +55,7 @@ export function createEngine({ stages }) {
   }
 
   function isUnlocked(id) {
+    if (params.get("stage") === id) return true;
     return unlockedIds().includes(id);
   }
 

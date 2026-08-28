@@ -1,4 +1,4 @@
-import { COLORS } from "./colors.js?v=41";
+import { COLORS } from "./colors.js?v=43";
 
 const CX = 100;
 const CY = 100;
