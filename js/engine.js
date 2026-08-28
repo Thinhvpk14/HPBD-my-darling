@@ -1,5 +1,4 @@
 const STORAGE_KEY = "hbd.progress.v1";
-const DEBUG_KEY = "hbd.debug";
 
 function readJson(key, fallback) {
   try {
@@ -15,12 +14,9 @@ function writeJson(key, value) {
 
 export function createEngine({ stages }) {
   const params = new URLSearchParams(location.search);
-  const debugEnabled =
-    params.get("debug") === "1" || localStorage.getItem(DEBUG_KEY) === "1";
 
   const root = document.getElementById("stage-root");
   const navEl = document.getElementById("stage-nav");
-  const debugEl = document.getElementById("debug-panel");
   const titleEl = document.getElementById("campaign-title");
   const ledeEl = document.getElementById("campaign-lede");
   const eyebrowEl = document.getElementById("campaign-eyebrow");
@@ -32,7 +28,6 @@ export function createEngine({ stages }) {
   });
   let currentId = null;
   let unmount = null;
-  let debugInfo = () => ({});
 
   function save() {
     writeJson(STORAGE_KEY, progress);
@@ -51,7 +46,6 @@ export function createEngine({ stages }) {
   }
 
   function unlockedIds() {
-    if (debugEnabled) return stages.map((stage) => stage.id);
     const ids = new Set([stages[0].id]);
     for (const clearedId of progress.cleared) {
       const following = nextStage(clearedId);
@@ -67,7 +61,7 @@ export function createEngine({ stages }) {
   function setQuery(stageId) {
     const url = new URL(location.href);
     url.searchParams.set("stage", stageId);
-    if (debugEnabled) url.searchParams.set("debug", "1");
+    url.searchParams.delete("debug");
     history.replaceState(null, "", url);
   }
 
@@ -91,38 +85,11 @@ export function createEngine({ stages }) {
     });
   }
 
-  function renderDebug() {
-    if (!debugEnabled) {
-      debugEl.hidden = true;
-      return;
-    }
-    debugEl.hidden = false;
-    const select = debugEl.querySelector("[data-debug-stage]");
-    select.innerHTML = stages
-      .map(
-        (stage) =>
-          `<option value="${stage.id}" ${stage.id === currentId ? "selected" : ""}>${stage.title}</option>`
-      )
-      .join("");
-    const info = debugInfo();
-    debugEl.querySelector("[data-debug-info]").textContent = JSON.stringify(
-      {
-        current: currentId,
-        cleared: progress.cleared,
-        unlocked: unlockedIds(),
-        ...info,
-      },
-      null,
-      2
-    );
-  }
-
   function goTo(id) {
     const stage = stageById(id);
     if (!stage || !isUnlocked(id)) return false;
     if (typeof unmount === "function") unmount();
     unmount = null;
-    debugInfo = () => ({});
     root.innerHTML = "";
     const template = document.getElementById(stage.templateId);
     root.appendChild(template.content.cloneNode(true));
@@ -134,19 +101,13 @@ export function createEngine({ stages }) {
     ledeEl.textContent = stage.lede;
     eyebrowEl.textContent = `Màn ${stageIndex(id) + 1} / ${stages.length}`;
     unmount = stage.mount(root, {
-      debug: debugEnabled,
       progress,
-      setDebugInfo(fn) {
-        debugInfo = fn;
-        renderDebug();
-      },
       onComplete(result = {}) {
         return complete(result);
       },
       goTo,
     });
     renderNav();
-    renderDebug();
     return true;
   }
 
@@ -157,14 +118,7 @@ export function createEngine({ stages }) {
     progress.results[currentId] = result;
     save();
     renderNav();
-    renderDebug();
     return nextStage(currentId);
-  }
-
-  function reset() {
-    progress = { current: stages[0].id, cleared: [], results: {} };
-    save();
-    goTo(stages[0].id);
   }
 
   function start() {
@@ -177,29 +131,5 @@ export function createEngine({ stages }) {
     goTo(startId);
   }
 
-  debugEl.querySelector("[data-debug-stage]").addEventListener("change", (event) => {
-    goTo(event.target.value);
-  });
-  debugEl.querySelector("[data-debug-complete]").addEventListener("click", () => {
-    const next = complete({ debugSkip: true });
-    if (next) goTo(next.id);
-  });
-  debugEl.querySelector("[data-debug-reset]").addEventListener("click", reset);
-  debugEl.querySelector("[data-debug-persist]").checked = localStorage.getItem(DEBUG_KEY) === "1";
-  debugEl.querySelector("[data-debug-persist]").addEventListener("change", (event) => {
-    if (event.target.checked) localStorage.setItem(DEBUG_KEY, "1");
-    else localStorage.removeItem(DEBUG_KEY);
-  });
-
-  const api = {
-    stages,
-    debug: debugEnabled,
-    goTo,
-    complete,
-    reset,
-    progress: () => progress,
-    unlockedIds,
-  };
-
-  return { start, api };
+  return { start };
 }

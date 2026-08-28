@@ -3,7 +3,7 @@ import {
   hasDuplicateDigits,
   hasUniqueDigits,
   uniqueDigitCode,
-} from "../shared/mastermind.js?v=17";
+} from "../shared/mastermind.js?v=36";
 
 const LENGTH = 5;
 
@@ -240,7 +240,6 @@ export const passwordStage = {
         nextBtn.onclick = () => {
           if (next) ctx.goTo(next.id);
         };
-        ctx.setDebugInfo(() => ({ secret: secret.join(""), attempts, won }));
         return;
       }
       slots()[0].focus();
@@ -260,11 +259,6 @@ export const passwordStage = {
       setPlayStatus(`Lần 1 · ${LENGTH} số ngẫu nhiên`);
       syncGuessState();
       slots()[0].focus();
-      ctx.setDebugInfo(() => ({
-        secret: ctx.debug ? secret.join("") : "(bật ?debug=1 để xem)",
-        attempts,
-        won,
-      }));
     }
 
     function openRules() {

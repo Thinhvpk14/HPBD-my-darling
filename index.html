@@ -7,9 +7,9 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <title>Hành trình giải đố</title>
-    <link rel="stylesheet" href="styles.css?v=17" />
+    <link rel="stylesheet" href="styles.css?v=36" />
     <script>
-      window.APP_VERSION = "17";
+      window.APP_VERSION = "36";
       fetch("version.json?t=" + Date.now(), { cache: "no-store" })
         .then((res) => res.json())
         .then((data) => {
@@ -37,27 +37,6 @@
       <nav id="stage-nav" class="stage-nav" aria-label="Các màn chơi"></nav>
       <div id="stage-root"></div>
     </main>
-
-    <aside id="debug-panel" class="debug-panel" hidden>
-      <p class="debug-title">Debug · thêm ?debug=1 vào URL</p>
-      <div class="debug-row">
-        <label>
-          Màn
-          <select data-debug-stage></select>
-        </label>
-        <button type="button" class="btn ghost compact" data-debug-complete>
-          Xong màn này
-        </button>
-        <button type="button" class="btn ghost compact" data-debug-reset>
-          Reset progress
-        </button>
-        <label class="debug-check">
-          <input type="checkbox" data-debug-persist />
-          Giữ debug
-        </label>
-      </div>
-      <pre data-debug-info></pre>
-    </aside>
 
     <template id="tpl-password">
       <div class="playfield">
@@ -122,19 +101,19 @@
           <div class="cr-orb" aria-hidden="true"></div>
           <p class="eyebrow">Màn 2</p>
           <h2>Khóa ba màu</h2>
-          <p class="lede">Xoay chấm giữa · Khớp 3 màu · Mở khóa từng vòng</p>
+          <p class="lede">Xoay chấm giữa · Mỗi vòng thêm 1 chấm · Cung ngắn dần</p>
           <button type="button" data-play-btn class="btn primary cr-play-btn">Play</button>
         </section>
 
         <section data-play class="cr-game" hidden>
           <div class="cr-hud">
             <p data-level class="cr-level">LEVEL 1</p>
-            <p data-progress class="cr-progress">0 / 5</p>
+            <p data-progress class="cr-progress">0 / 10</p>
             <p data-budget class="cr-budget" hidden></p>
           </div>
-          <p data-hint class="cr-hint" hidden></p>
+          <p data-hint class="cr-hint is-off"></p>
           <div class="cr-stage">
-    <svg data-svg class="cr-svg" viewBox="-14 -14 228 228" aria-label="Vòng màu"></svg>
+    <svg data-svg class="cr-svg" viewBox="-110 -110 420 420" aria-label="Vòng màu"></svg>
             <div data-sparks class="cr-sparks"></div>
             <p data-feedback class="cr-feedback">Chưa khớp</p>
           </div>
@@ -149,7 +128,7 @@
           <div class="modal-card">
             <p class="eyebrow">Hoàn thành</p>
             <h2 data-win-title>LEVEL COMPLETE!</h2>
-            <p class="cr-progress-lg">5 / 5</p>
+            <p class="cr-progress-lg">10 / 10</p>
             <div class="actions modal-actions">
               <button type="button" data-replay-level class="btn ghost">Replay</button>
               <button type="button" data-next-level class="btn primary">Next Level</button>
@@ -159,6 +138,6 @@
       </div>
     </template>
 
-    <script type="module" src="js/main.js?v=17"></script>
+    <script type="module" src="js/main.js?v=36"></script>
   </body>
 </html>

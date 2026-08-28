@@ -1,11 +1,11 @@
-import { createAudio } from "./color-rings/audio.js?v=17";
-import { generateLevel, isMatch, stepDegrees } from "./color-rings/generate.js?v=17";
-import { burst, drawPuzzle } from "./color-rings/render.js?v=17";
+import { createAudio } from "./color-rings/audio.js?v=36";
+import { generateLevel, isMatch, RING_COUNT, stepDegrees } from "./color-rings/generate.js?v=36";
+import { burst, drawPuzzle, moveHubToRing } from "./color-rings/render.js?v=36";
 
 export const colorRingsStage = {
   id: "color-rings",
   title: "Khóa ba màu",
-  lede: "Xoay chấm giữa khớp 3 màu, rồi mở từng vòng từ trong ra ngoài.",
+  lede: "Xoay chấm giữa khớp màu. Mỗi vòng thêm 1 chấm, cung ngắn và đứt hơn.",
   templateId: "tpl-color-rings",
   mount(root, ctx) {
     const startScreen = root.querySelector("[data-start]");
@@ -26,7 +26,6 @@ export const colorRingsStage = {
     const winTitle = root.querySelector("[data-win-title]");
     const budgetEl = root.querySelector("[data-budget]");
 
-    const params = new URLSearchParams(location.search);
     const audio = createAudio();
     let levelNo = 1;
     let puzzle = null;
@@ -37,11 +36,11 @@ export const colorRingsStage = {
     let tutorialStep = 0;
     let rotatesUsed = 0;
     let stageCleared = false;
-    let rotating = false;
+    let spin = 0;
 
     const tutorials = [
       "Xoay chấm giữa cho khớp màu",
-      "Mỗi màu trên chấm phải trùng cung đang sáng",
+      "Mỗi chấm phải trùng cung đang sáng",
       "Bấm MỞ KHÓA",
     ];
 
@@ -52,24 +51,51 @@ export const colorRingsStage = {
       setFeedback.tid = setTimeout(() => feedbackEl.classList.remove("is-on"), 700);
     }
 
+    function hub() {
+      return puzzle.hubs[active];
+    }
+
+    function matched() {
+      const current = hub();
+      return isMatch(current.colors, rotation, puzzle.rings[active], current.slots);
+    }
+
     function segmentN() {
       return puzzle?.segments ?? puzzle?.rings?.[0]?.length ?? 12;
     }
 
     function applyHubRotation(animate) {
-      const hub = svg.querySelector("#cr-hub");
-      if (!hub) return;
-      const deg = `${rotation * stepDegrees(segmentN())}deg`;
-      hub.style.setProperty("--rot", deg);
-      hub.style.transition = animate ? "transform 0.22s ease-out" : "none";
-      hub.style.transformOrigin = "100px 100px";
-      hub.style.transform = `rotate(${deg})`;
+      const spinner = svg.querySelector("#cr-spinner");
+      if (!spinner) return;
+      const deg = `${spin * stepDegrees(segmentN())}deg`;
+      spinner.style.setProperty("--rot", deg);
+      spinner.style.transition = animate ? "transform 0.068s ease-out" : "none";
+      spinner.style.transformOrigin = "100px 100px";
+      spinner.style.transform = `rotate(${deg})`;
+    }
+
+    function syncHud() {
+      levelEl.textContent = `LEVEL ${levelNo}`;
+      progressEl.textContent = `${completed.length} / ${RING_COUNT}`;
+      if (puzzle.rotationLimit != null) {
+        budgetEl.hidden = false;
+        budgetEl.textContent = `Xoay: ${rotatesUsed}/${puzzle.rotationLimit}`;
+      } else {
+        budgetEl.hidden = true;
+      }
+      if (levelNo === 1 && completed.length === 0 && tutorialStep < tutorials.length) {
+        hintEl.textContent = tutorials[tutorialStep];
+        hintEl.classList.remove("is-off");
+      } else {
+        hintEl.classList.add("is-off");
+      }
     }
 
     function render() {
       drawPuzzle(svg, {
         rings: puzzle.rings,
-        center: puzzle.center,
+        hub: hub(),
+        n: segmentN(),
         active,
         completed,
       });
@@ -81,29 +107,27 @@ export const colorRingsStage = {
         });
       }
       applyHubRotation(false);
-      levelEl.textContent = `LEVEL ${levelNo}`;
-      progressEl.textContent = `${completed.length} / 5`;
-      if (puzzle.rotationLimit != null) {
-        budgetEl.hidden = false;
-        budgetEl.textContent = `Xoay: ${rotatesUsed}/${puzzle.rotationLimit}`;
-      } else {
-        budgetEl.hidden = true;
-      }
-      if (levelNo === 1 && completed.length === 0 && tutorialStep < tutorials.length) {
-        hintEl.hidden = false;
-        hintEl.textContent = tutorials[tutorialStep];
-      } else {
-        hintEl.hidden = true;
-      }
-      ctx.setDebugInfo(() => ({
-        level: levelNo,
-        rotation,
-        segments: segmentN(),
-        step: stepDegrees(segmentN()),
-        active,
-        match: isMatch(puzzle.center, rotation, puzzle.rings[active]),
-        needed: puzzle.needed,
-      }));
+      syncHud();
+    }
+
+    function settleUnlockedRing(index) {
+      const ring = svg.querySelector(`[data-ring="${index}"]`);
+      const locked = svg.querySelector("#cr-locked");
+      if (!ring || !locked) return;
+      const deg = -spin * stepDegrees(segmentN());
+      ring.classList.remove("is-unlocking", "is-active", "is-idle", "is-done");
+      ring.classList.add("is-locked");
+      ring.style.transition = "none";
+      ring.style.transformBox = "view-box";
+      ring.style.transformOrigin = "100px 100px";
+      ring.style.transform = `rotate(${deg}deg)`;
+      locked.appendChild(ring);
+    }
+
+    function activateRing(index) {
+      const ring = svg.querySelector(`[data-ring="${index}"]`);
+      ring?.classList.remove("is-idle", "is-hidden", "is-done");
+      ring?.classList.add("is-active");
     }
 
     function startLevel(nextLevel) {
@@ -113,7 +137,7 @@ export const colorRingsStage = {
       active = 0;
       completed = [];
       busy = false;
-      rotating = false;
+      spin = 0;
       tutorialStep = levelNo === 1 ? 0 : 99;
       rotatesUsed = 0;
       startScreen.hidden = true;
@@ -123,7 +147,7 @@ export const colorRingsStage = {
     }
 
     function rotate(dir) {
-      if (busy || rotating) return;
+      if (busy) return;
       if (puzzle.rotationLimit != null && rotatesUsed >= puzzle.rotationLimit) {
         setFeedback("Hết lượt xoay");
         audio.wrong();
@@ -131,43 +155,31 @@ export const colorRingsStage = {
       }
       audio.unlock();
       audio.rotate();
-      rotating = true;
       const n = segmentN();
-      rotation = (rotation + dir + n) % n;
+      spin += dir;
+      rotation = ((spin % n) + n) % n;
       rotatesUsed += 1;
       if (tutorialStep === 0) tutorialStep = 1;
       applyHubRotation(true);
       if (puzzle.rotationLimit != null) {
         budgetEl.textContent = `Xoay: ${rotatesUsed}/${puzzle.rotationLimit}`;
       }
-      setTimeout(() => {
-        rotating = false;
-        if (tutorialStep === 1 && isMatch(puzzle.center, rotation, puzzle.rings[active])) {
-          tutorialStep = 2;
-          hintEl.textContent = tutorials[2];
-        }
-        ctx.setDebugInfo(() => ({
-          level: levelNo,
-          rotation,
-          segments: n,
-          step: stepDegrees(n),
-          active,
-          match: isMatch(puzzle.center, rotation, puzzle.rings[active]),
-          needed: puzzle.needed,
-        }));
-      }, 240);
+      if (tutorialStep === 1 && matched()) {
+        tutorialStep = 2;
+        hintEl.textContent = tutorials[2];
+      }
     }
 
     function unlock() {
-      if (busy || rotating) return;
+      if (busy) return;
       audio.unlock();
       audio.click();
-      const hub = svg.querySelector("#cr-hub");
-      if (!isMatch(puzzle.center, rotation, puzzle.rings[active])) {
+      const spinner = svg.querySelector("#cr-spinner");
+      if (!matched()) {
         audio.wrong();
-        hub?.classList.remove("is-shake");
-        void hub?.offsetWidth;
-        hub?.classList.add("is-shake");
+        spinner?.classList.remove("is-shake");
+        void spinner?.offsetWidth;
+        spinner?.classList.add("is-shake");
         setFeedback("Chưa khớp");
         return;
       }
@@ -175,17 +187,28 @@ export const colorRingsStage = {
       busy = true;
       audio.match();
       burst(sparks);
-      const ring = svg.querySelector(`[data-ring="${active}"]`);
-      ring?.classList.add("is-unlocking");
-      hub?.classList.add("is-pulse");
+      const unlocked = active;
+      const ring = svg.querySelector(`[data-ring="${unlocked}"]`);
+      ring?.classList.remove("is-active");
+      ring?.classList.add("is-locked");
+      hintEl.classList.add("is-off");
       setFeedback("Mở khóa!");
+      progressEl.textContent = `${completed.length + 1} / ${RING_COUNT}`;
 
       setTimeout(() => {
-        completed.push(active);
+        completed.push(unlocked);
         sparks.innerHTML = "";
-        if (completed.length >= 5) {
+        settleUnlockedRing(unlocked);
+        if (completed.length >= RING_COUNT) {
+          moveHubToRing(svg, {
+            hub: puzzle.hubs[unlocked],
+            n: segmentN(),
+            ringIndex: unlocked,
+            fromCenter: unlocked === 0,
+          });
           audio.complete();
-          progressEl.textContent = "5 / 5";
+          const winProgress = root.querySelector(".cr-progress-lg");
+          if (winProgress) winProgress.textContent = `${RING_COUNT} / ${RING_COUNT}`;
           winTitle.textContent = "LEVEL COMPLETE!";
           winScreen.hidden = false;
           if (!stageCleared) {
@@ -193,14 +216,24 @@ export const colorRingsStage = {
             ctx.onComplete({ level: levelNo });
           }
           busy = false;
-          render();
+          syncHud();
           return;
         }
+        const fromCenter = unlocked === 0;
         active += 1;
         tutorialStep = 99;
-        busy = false;
-        render();
-      }, 520);
+        activateRing(active);
+        moveHubToRing(svg, {
+          hub: hub(),
+          n: segmentN(),
+          ringIndex: unlocked,
+          fromCenter,
+        });
+        syncHud();
+        setTimeout(() => {
+          busy = false;
+        }, 460);
+      }, 220);
     }
 
     playBtn.addEventListener("click", () => {
@@ -229,8 +262,6 @@ export const colorRingsStage = {
     startScreen.hidden = false;
     playScreen.hidden = true;
     winScreen.hidden = true;
-    ctx.setDebugInfo(() => ({ screen: "start" }));
-    if (ctx.debug && params.get("play") === "1") startLevel(1);
 
     return () => {
       busy = true;
