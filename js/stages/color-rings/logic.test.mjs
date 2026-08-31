@@ -158,12 +158,12 @@ function generateRing(colors, n, needed, slots, { tutorial } = {}) {
   return ring;
 }
 
-const RING_COUNT = 10;
+const RING_COUNT = 5;
 
 function segmentCount(level) {
-  if (level <= 1) return 18;
-  if (level <= 4) return 24;
-  return 30;
+  if (level <= 1) return 12;
+  if (level <= 4) return 18;
+  return 24;
 }
 
 function generateLevel(level) {

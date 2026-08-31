@@ -1,11 +1,11 @@
-import { COLOR_KEYS } from "./colors.js?v=43";
+import { COLOR_KEYS } from "./colors.js?v=46";
 
-export const RING_COUNT = 10;
+export const RING_COUNT = 5;
 
 export function segmentCount(level) {
-  if (level <= 1) return 18;
-  if (level <= 4) return 24;
-  return 30;
+  if (level <= 1) return 12;
+  if (level <= 4) return 18;
+  return 24;
 }
 
 export function stepDegrees(segments) {

@@ -1,14 +1,14 @@
-import { COLORS } from "./colors.js?v=43";
+import { COLORS } from "./colors.js?v=46";
 
 const CX = 100;
 const CY = 100;
-const HUB_R = 12;
-const DOT_R = 5.6;
-const DOT_DIST = 16.2;
-const RING_INNER = 28;
-const RING_WIDTH = 6.4;
-const RING_GAP = 10;
-const LOCKED_STROKE = 2.2;
+const HUB_R = 15;
+const DOT_R = 7;
+const DOT_DIST = 19.5;
+const RING_INNER = 26;
+const RING_WIDTH = 8.5;
+const RING_GAP = 11;
+const LOCKED_STROKE = 2.6;
 
 function ringBand(index) {
   const r0 = RING_INNER + index * (RING_WIDTH + RING_GAP);

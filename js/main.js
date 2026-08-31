@@ -1,15 +1,13 @@
-import { createEngine } from "./engine.js?v=43";
-import { passwordStage } from "./stages/password-guess.js?v=43";
-import { colorRingsStage } from "./stages/color-rings.js?v=43";
-import { wordMemoryStage } from "./stages/word-memory.js?v=43";
-import { orderMemoryStage } from "./stages/order-memory.js?v=43";
+import { createEngine } from "./engine.js?v=46";
+import { passwordStage } from "./stages/password-guess.js?v=46";
+import { colorRingsStage } from "./stages/color-rings.js?v=46";
+import { wordMemoryStage } from "./stages/word-memory.js?v=46";
 
 const { start } = createEngine({
   stages: [
     passwordStage,
     colorRingsStage,
     wordMemoryStage,
-    orderMemoryStage,
   ],
 });
 

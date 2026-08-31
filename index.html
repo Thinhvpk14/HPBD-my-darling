@@ -7,9 +7,9 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <title>Hành trình giải đố</title>
-    <link rel="stylesheet" href="styles.css?v=43" />
+    <link rel="stylesheet" href="styles.css?v=46" />
     <script>
-      window.APP_VERSION = "43";
+      window.APP_VERSION = "46";
       fetch("version.json?t=" + Date.now(), { cache: "no-store" })
         .then((res) => res.json())
         .then((data) => {
@@ -108,12 +108,12 @@
         <section data-play class="cr-game" hidden>
           <div class="cr-hud">
             <p data-level class="cr-level">LEVEL 1</p>
-            <p data-progress class="cr-progress">0 / 10</p>
+            <p data-progress class="cr-progress">0 / 5</p>
             <p data-budget class="cr-budget" hidden></p>
           </div>
           <p data-hint class="cr-hint is-off"></p>
           <div class="cr-stage">
-    <svg data-svg class="cr-svg" viewBox="-96 -96 392 392" aria-label="Vòng màu"></svg>
+    <svg data-svg class="cr-svg" viewBox="-38 -38 276 276" aria-label="Vòng màu"></svg>
             <div data-sparks class="cr-sparks"></div>
             <p data-feedback class="cr-feedback">Chưa khớp</p>
           </div>
@@ -128,7 +128,7 @@
           <div class="modal-card">
             <p class="eyebrow">Hoàn thành</p>
             <h2 data-win-title>LEVEL COMPLETE!</h2>
-            <p class="cr-progress-lg">10 / 10</p>
+            <p class="cr-progress-lg">5 / 5</p>
             <div class="actions modal-actions">
               <button type="button" data-replay-level class="btn ghost">Replay</button>
               <button type="button" data-next-level class="btn primary">Next Level</button>
@@ -144,14 +144,14 @@
           <div class="wm-mark" aria-hidden="true">Aa</div>
           <p class="eyebrow">Màn 3</p>
           <h2>Từ mới hay cũ?</h2>
-          <p class="lede">30 từ trang sức · mỹ phẩm · thời trang. Trong 30 giây, chọn đúng 30 lần.</p>
+          <p class="lede">30 từ trang sức · mỹ phẩm · thời trang. Trong 30 giây, chọn đúng 20 lần.</p>
           <button type="button" data-play-btn class="btn primary cr-play-btn">Play</button>
         </section>
 
         <section data-play class="wm-game" hidden>
           <div class="wm-hud">
             <p data-clock class="wm-clock">30.0s</p>
-            <p data-score class="wm-score">0 / 30</p>
+            <p data-score class="wm-score">0 / 20</p>
           </div>
           <div class="wm-timer" aria-hidden="true">
             <div data-timer-fill class="wm-timer-fill"></div>
@@ -169,7 +169,7 @@
         <div data-win class="modal" hidden>
           <div class="modal-card">
             <p class="eyebrow">Hoàn thành</p>
-            <h2>30 / 30 đúng!</h2>
+            <h2>20 / 20 đúng!</h2>
             <p class="lede">Bạn nhận ra đúng từ mới và từ đã xuất hiện.</p>
             <div class="actions modal-actions">
               <button type="button" data-replay-win class="btn ghost">Chơi lại</button>
@@ -181,8 +181,8 @@
         <div data-fail class="modal" hidden>
           <div class="modal-card">
             <p class="eyebrow">Hết giờ</p>
-            <h2>Chưa đủ 30 lần đúng</h2>
-            <p data-fail-score class="cr-progress-lg">0 / 30</p>
+            <h2>Chưa đủ 20 lần đúng</h2>
+            <p data-fail-score class="cr-progress-lg">0 / 20</p>
             <div class="actions modal-actions">
               <button type="button" data-replay-fail class="btn primary">Thử lại</button>
             </div>
@@ -191,40 +191,6 @@
       </div>
     </template>
 
-    <template id="tpl-order-memory">
-      <div class="playfield om-play">
-        <section data-start class="om-start">
-          <div class="om-mark" aria-hidden="true">1 2 3</div>
-          <p class="eyebrow">Màn 4</p>
-          <h2>Sắp đúng thứ tự</h2>
-          <p class="lede">Nhìn chuỗi đồ trong vài giây, nhớ thứ tự, rồi xếp lại. 5 vòng, mỗi vòng dài hơn.</p>
-          <button type="button" data-play-btn class="btn primary cr-play-btn">Play</button>
-        </section>
-
-        <section data-play class="om-game" hidden>
-          <div class="om-hud">
-            <p class="om-label">Vòng</p>
-            <p data-progress class="om-progress">0 / 5</p>
-          </div>
-          <p data-hint class="om-hint">Nhớ thứ tự này</p>
-          <div data-slots class="om-slots"></div>
-          <div data-pool class="om-pool"></div>
-        </section>
-
-        <div data-win class="modal" hidden>
-          <div class="modal-card">
-            <p class="eyebrow">Hoàn thành</p>
-            <h2>Đúng cả 5 vòng!</h2>
-            <p class="lede">Bạn nhớ và xếp lại đúng thứ tự.</p>
-            <div class="actions modal-actions">
-              <button type="button" data-replay-win class="btn ghost">Chơi lại</button>
-              <button type="button" data-next class="btn primary">Màn tiếp theo</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <script type="module" src="js/main.js?v=43"></script>
+    <script type="module" src="js/main.js?v=46"></script>
   </body>
 </html>

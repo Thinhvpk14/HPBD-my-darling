@@ -1,6 +1,6 @@
-import { createAudio } from "./color-rings/audio.js?v=43";
-import { generateLevel, isMatch, RING_COUNT, stepDegrees } from "./color-rings/generate.js?v=43";
-import { burst, drawPuzzle, moveHubToRing } from "./color-rings/render.js?v=43";
+import { createAudio } from "./color-rings/audio.js?v=46";
+import { generateLevel, isMatch, RING_COUNT, stepDegrees } from "./color-rings/generate.js?v=46";
+import { burst, drawPuzzle, moveHubToRing } from "./color-rings/render.js?v=46";
 
 export const colorRingsStage = {
   id: "color-rings",
@@ -143,6 +143,7 @@ export const colorRingsStage = {
       startScreen.hidden = true;
       winScreen.hidden = true;
       playScreen.hidden = false;
+      document.body.classList.add("cr-playing");
       render();
     }
 
@@ -265,6 +266,7 @@ export const colorRingsStage = {
 
     return () => {
       busy = true;
+      document.body.classList.remove("cr-playing");
     };
   },
 };

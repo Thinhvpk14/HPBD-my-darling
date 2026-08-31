@@ -55,7 +55,6 @@ export function createEngine({ stages }) {
   }
 
   function isUnlocked(id) {
-    if (params.get("stage") === id) return true;
     return unlockedIds().includes(id);
   }
 
@@ -124,7 +123,8 @@ export function createEngine({ stages }) {
 
   function start() {
     const requested = params.get("stage");
-    const fallback = progress.current && isUnlocked(progress.current)
+    const currentKnown = Boolean(stageById(progress.current));
+    const fallback = currentKnown && isUnlocked(progress.current)
       ? progress.current
       : stages[0].id;
     const startId =
