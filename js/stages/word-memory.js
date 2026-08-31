@@ -1,10 +1,10 @@
-import { createAudio } from "./color-rings/audio.js?v=46";
-import { GOAL, DURATION_MS, createRound } from "./word-memory/logic.js?v=46";
+import { createAudio } from "./color-rings/audio.js?v=57";
+import { GOAL, DURATION_MS, createRound } from "./word-memory/logic.js?v=57";
 
 export const wordMemoryStage = {
   id: "word-memory",
   title: "Từ mới hay cũ?",
-  lede: "Trong 30 giây, chọn đúng 20 lần: từ mới, hay đã xuất hiện.",
+  lede: "Trong 30 giây, chọn đúng 10 lần: từ mới, hay đã xuất hiện.",
   templateId: "tpl-word-memory",
   mount(root, ctx) {
     const startScreen = root.querySelector("[data-start]");
@@ -94,11 +94,9 @@ export const wordMemoryStage = {
         show("win");
         if (!stageCleared) {
           stageCleared = true;
-          const next = ctx.onComplete({ score });
-          nextBtn.hidden = !next;
-          nextBtn.onclick = () => {
-            if (next) ctx.goTo(next.id);
-          };
+          ctx.onComplete({ score });
+          nextBtn.hidden = false;
+          nextBtn.onclick = () => ctx.openMap();
         }
         return;
       }

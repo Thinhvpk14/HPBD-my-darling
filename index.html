@@ -7,9 +7,9 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <title>Hành trình giải đố</title>
-    <link rel="stylesheet" href="styles.css?v=46" />
+    <link rel="stylesheet" href="styles.css?v=57" />
     <script>
-      window.APP_VERSION = "46";
+      window.APP_VERSION = "57";
       fetch("version.json?t=" + Date.now(), { cache: "no-store" })
         .then((res) => res.json())
         .then((data) => {
@@ -34,7 +34,112 @@
         <p id="campaign-lede" class="lede"></p>
       </header>
 
-      <nav id="stage-nav" class="stage-nav" aria-label="Các màn chơi"></nav>
+      <nav id="stage-nav" class="stage-nav" hidden aria-hidden="true"></nav>
+      <button type="button" id="map-fab" class="map-fab" hidden>Bản đồ</button>
+
+      <section id="journey-map" class="journey" aria-label="Bản đồ hành trình">
+        <svg class="journey-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M20 88 C 20 74, 80 76, 80 62 C 80 48, 20 50, 20 36 C 20 24, 80 26, 80 16 C 80 8, 50 6, 50 8" />
+        </svg>
+
+        <svg class="tulip tulip-1" viewBox="0 0 40 72" aria-hidden="true">
+          <path d="M20 30 L20 70" stroke="#5d8f4a" stroke-width="2.2" fill="none" />
+          <path d="M20 50 Q7 44 6 32 Q16 40 20 48 Z" fill="#6aa35a" />
+          <path d="M20 52 Q33 46 34 34 Q24 42 20 50 Z" fill="#5d934c" />
+          <path d="M20 8 Q10 22 12 34 Q20 28 28 34 Q30 22 20 8 Z" fill="#f4b8c8" />
+          <path d="M20 10 Q15 22 20 34 Q25 22 20 10 Z" fill="#e889a8" />
+        </svg>
+        <svg class="tulip tulip-2" viewBox="0 0 40 72" aria-hidden="true">
+          <path d="M20 30 L20 70" stroke="#5d8f4a" stroke-width="2.2" fill="none" />
+          <path d="M20 50 Q7 44 6 32 Q16 40 20 48 Z" fill="#6aa35a" />
+          <path d="M20 52 Q33 46 34 34 Q24 42 20 50 Z" fill="#5d934c" />
+          <path d="M20 8 Q10 22 12 34 Q20 28 28 34 Q30 22 20 8 Z" fill="#fff5f8" />
+          <path d="M20 10 Q15 22 20 34 Q25 22 20 10 Z" fill="#f0c9d8" />
+        </svg>
+        <svg class="tulip tulip-3" viewBox="0 0 40 72" aria-hidden="true">
+          <path d="M20 30 L20 70" stroke="#5d8f4a" stroke-width="2.2" fill="none" />
+          <path d="M20 50 Q7 44 6 32 Q16 40 20 48 Z" fill="#6aa35a" />
+          <path d="M20 8 Q10 22 12 34 Q20 28 28 34 Q30 22 20 8 Z" fill="#c46b86" />
+          <path d="M20 10 Q15 22 20 34 Q25 22 20 10 Z" fill="#e8a0b5" />
+        </svg>
+        <svg class="tulip tulip-4" viewBox="0 0 40 72" aria-hidden="true">
+          <path d="M20 30 L20 70" stroke="#5d8f4a" stroke-width="2.2" fill="none" />
+          <path d="M20 50 Q7 44 6 32 Q16 40 20 48 Z" fill="#6aa35a" />
+          <path d="M20 52 Q33 46 34 34 Q24 42 20 50 Z" fill="#5d934c" />
+          <path d="M20 8 Q10 22 12 34 Q20 28 28 34 Q30 22 20 8 Z" fill="#f4b8c8" />
+          <path d="M20 10 Q15 22 20 34 Q25 22 20 10 Z" fill="#d4849c" />
+        </svg>
+        <svg class="tulip tulip-5" viewBox="0 0 40 72" aria-hidden="true">
+          <path d="M20 30 L20 70" stroke="#5d8f4a" stroke-width="2.2" fill="none" />
+          <path d="M20 52 Q33 46 34 34 Q24 42 20 50 Z" fill="#5d934c" />
+          <path d="M20 8 Q10 22 12 34 Q20 28 28 34 Q30 22 20 8 Z" fill="#fff5f8" />
+          <path d="M20 10 Q15 22 20 34 Q25 22 20 10 Z" fill="#f4b8c8" />
+        </svg>
+        <svg class="tulip tulip-6" viewBox="0 0 40 72" aria-hidden="true">
+          <path d="M20 30 L20 70" stroke="#5d8f4a" stroke-width="2.2" fill="none" />
+          <path d="M20 50 Q7 44 6 32 Q16 40 20 48 Z" fill="#6aa35a" />
+          <path d="M20 8 Q10 22 12 34 Q20 28 28 34 Q30 22 20 8 Z" fill="#e889a8" />
+          <path d="M20 10 Q15 22 20 34 Q25 22 20 10 Z" fill="#c46b86" />
+        </svg>
+        <svg class="tulip tulip-7" viewBox="0 0 40 72" aria-hidden="true">
+          <path d="M20 30 L20 70" stroke="#5d8f4a" stroke-width="2.2" fill="none" />
+          <path d="M20 52 Q33 46 34 34 Q24 42 20 50 Z" fill="#5d934c" />
+          <path d="M20 8 Q10 22 12 34 Q20 28 28 34 Q30 22 20 8 Z" fill="#f4b8c8" />
+          <path d="M20 10 Q15 22 20 34 Q25 22 20 10 Z" fill="#fff5f8" />
+        </svg>
+        <svg class="tulip tulip-8" viewBox="0 0 40 72" aria-hidden="true">
+          <path d="M20 30 L20 70" stroke="#5d8f4a" stroke-width="2.2" fill="none" />
+          <path d="M20 50 Q7 44 6 32 Q16 40 20 48 Z" fill="#6aa35a" />
+          <path d="M20 8 Q10 22 12 34 Q20 28 28 34 Q30 22 20 8 Z" fill="#d4849c" />
+          <path d="M20 10 Q15 22 20 34 Q25 22 20 10 Z" fill="#e8a0b5" />
+        </svg>
+
+        <button type="button" class="map-gate" data-stage="password" aria-label="Cửa 1">
+          <span class="map-gate-tag">Cửa 1</span>
+          <span class="map-gate-frame"><span class="map-gate-door"></span></span>
+        </button>
+        <button type="button" class="map-gate" data-stage="color-rings" aria-label="Cửa 2">
+          <span class="map-gate-tag">Cửa 2</span>
+          <span class="map-gate-frame"><span class="map-gate-door"></span></span>
+        </button>
+        <button type="button" class="map-gate" data-stage="word-memory" aria-label="Cửa 3">
+          <span class="map-gate-tag">Cửa 3</span>
+          <span class="map-gate-frame"><span class="map-gate-door"></span></span>
+        </button>
+        <button type="button" class="map-gate" data-stage="order-memory" aria-label="Cửa 4">
+          <span class="map-gate-tag">Cửa 4</span>
+          <span class="map-gate-frame"><span class="map-gate-door"></span></span>
+        </button>
+        <button type="button" id="map-treasure" class="map-treasure is-locked" aria-label="Kho báu đang khóa">
+          <span class="map-gate-tag">Kho báu</span>
+          <span class="map-chest" aria-hidden="true">
+            <svg class="map-chest-svg" viewBox="0 0 72 64">
+              <ellipse cx="36" cy="58" rx="22" ry="4" fill="#4a2035" opacity="0.18" />
+              <path d="M10 30 L12 18 Q36 6 60 18 L62 30 Z" fill="#d4a24a" />
+              <path d="M12 18 Q36 8 60 18" fill="none" stroke="#f0d48a" stroke-width="2" />
+              <rect x="8" y="28" width="57" height="26" rx="5" fill="#c48a32" />
+              <rect x="8" y="28" width="57" height="8" fill="#a36f22" />
+              <rect x="10" y="38" width="52" height="3" rx="1.5" fill="#e8c96a" />
+              <rect x="30" y="34" width="12" height="16" rx="2" fill="#e8c96a" />
+              <rect x="32" y="40" width="8" height="11" rx="1.6" fill="#5b6472" />
+              <path d="M34 40 V35.5 a2.2 2.2 0 0 1 4 0 V40" fill="none" stroke="#374151" stroke-width="2" stroke-linecap="round" />
+              <circle cx="36" cy="46" r="1.2" fill="#e8c96a" />
+            </svg>
+          </span>
+        </button>
+
+        <div id="map-girl" class="map-girl" style="--x: 32%; --y: 76%;">
+          <p id="map-bubble" class="map-bubble">Mở cửa này nha~</p>
+          <img
+            class="girl-photo"
+            src="assets/map-portrait.jpg"
+            alt=""
+            width="160"
+            height="160"
+          />
+        </div>
+      </section>
+
       <div id="stage-root"></div>
     </main>
 
@@ -89,7 +194,7 @@
           <div data-win-code class="win-code"></div>
           <div class="actions modal-actions">
             <button type="button" data-replay class="btn ghost">Chơi lại màn này</button>
-            <button type="button" data-next class="btn primary">Màn tiếp theo</button>
+            <button type="button" data-next class="btn primary">Về bản đồ</button>
           </div>
         </div>
       </div>
@@ -144,14 +249,14 @@
           <div class="wm-mark" aria-hidden="true">Aa</div>
           <p class="eyebrow">Màn 3</p>
           <h2>Từ mới hay cũ?</h2>
-          <p class="lede">30 từ trang sức · mỹ phẩm · thời trang. Trong 30 giây, chọn đúng 20 lần.</p>
+          <p class="lede">30 từ trang sức · mỹ phẩm · thời trang. Trong 30 giây, chọn đúng 10 lần.</p>
           <button type="button" data-play-btn class="btn primary cr-play-btn">Play</button>
         </section>
 
         <section data-play class="wm-game" hidden>
           <div class="wm-hud">
             <p data-clock class="wm-clock">30.0s</p>
-            <p data-score class="wm-score">0 / 20</p>
+            <p data-score class="wm-score">0 / 10</p>
           </div>
           <div class="wm-timer" aria-hidden="true">
             <div data-timer-fill class="wm-timer-fill"></div>
@@ -169,11 +274,11 @@
         <div data-win class="modal" hidden>
           <div class="modal-card">
             <p class="eyebrow">Hoàn thành</p>
-            <h2>20 / 20 đúng!</h2>
+            <h2>10 / 10 đúng!</h2>
             <p class="lede">Bạn nhận ra đúng từ mới và từ đã xuất hiện.</p>
             <div class="actions modal-actions">
               <button type="button" data-replay-win class="btn ghost">Chơi lại</button>
-              <button type="button" data-next class="btn primary">Màn tiếp theo</button>
+              <button type="button" data-next class="btn primary">Về bản đồ</button>
             </div>
           </div>
         </div>
@@ -181,8 +286,8 @@
         <div data-fail class="modal" hidden>
           <div class="modal-card">
             <p class="eyebrow">Hết giờ</p>
-            <h2>Chưa đủ 20 lần đúng</h2>
-            <p data-fail-score class="cr-progress-lg">0 / 20</p>
+            <h2>Chưa đủ 10 lần đúng</h2>
+            <p data-fail-score class="cr-progress-lg">0 / 10</p>
             <div class="actions modal-actions">
               <button type="button" data-replay-fail class="btn primary">Thử lại</button>
             </div>
@@ -191,6 +296,40 @@
       </div>
     </template>
 
-    <script type="module" src="js/main.js?v=46"></script>
+    <template id="tpl-order-memory">
+      <div class="playfield om-play">
+        <section data-start class="om-start">
+          <div class="om-mark" aria-hidden="true">1 2 3</div>
+          <p class="eyebrow">Màn 4</p>
+          <h2>Sắp đúng thứ tự</h2>
+          <p class="lede">Nhìn chuỗi đồ trong vài giây, nhớ thứ tự, rồi xếp lại. 5 vòng, mỗi vòng dài hơn.</p>
+          <button type="button" data-play-btn class="btn primary cr-play-btn">Play</button>
+        </section>
+
+        <section data-play class="om-game" hidden>
+          <div class="om-hud">
+            <p class="om-label">Vòng</p>
+            <p data-progress class="om-progress">0 / 5</p>
+          </div>
+          <p data-hint class="om-hint">Nhớ thứ tự này</p>
+          <div data-slots class="om-slots"></div>
+          <div data-pool class="om-pool"></div>
+        </section>
+
+        <div data-win class="modal" hidden>
+          <div class="modal-card">
+            <p class="eyebrow">Hoàn thành</p>
+            <h2>Đúng cả 5 vòng!</h2>
+            <p class="lede">Bạn nhớ và xếp lại đúng thứ tự.</p>
+            <div class="actions modal-actions">
+              <button type="button" data-replay-win class="btn ghost">Chơi lại</button>
+              <button type="button" data-next class="btn primary">Về bản đồ</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <script type="module" src="js/main.js?v=57"></script>
   </body>
 </html>

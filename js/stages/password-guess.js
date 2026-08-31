@@ -3,7 +3,7 @@ import {
   hasDuplicateDigits,
   hasUniqueDigits,
   uniqueDigitCode,
-} from "../shared/mastermind.js?v=46";
+} from "../shared/mastermind.js?v=57";
 
 const LENGTH = 5;
 
@@ -235,11 +235,9 @@ export const passwordStage = {
         winText.textContent = `Bạn đã tìm ra mật khẩu sau ${attempts} lần đoán.`;
         winCode.innerHTML = secret.map((digit) => `<span>${digit}</span>`).join("");
         winModal.hidden = false;
-        const next = ctx.onComplete({ attempts });
-        nextBtn.hidden = !next;
-        nextBtn.onclick = () => {
-          if (next) ctx.goTo(next.id);
-        };
+        ctx.onComplete({ attempts });
+        nextBtn.hidden = false;
+        nextBtn.onclick = () => ctx.openMap();
         return;
       }
       slots()[0].focus();

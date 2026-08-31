@@ -1,4 +1,4 @@
-export const GOAL = 20;
+export const GOAL = 10;
 export const DURATION_MS = 30000;
 export const REPEAT_CHANCE = 0.45;
 

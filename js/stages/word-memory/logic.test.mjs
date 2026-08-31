@@ -2,7 +2,7 @@ import { WORDS, GOAL, createRound, isAppeared, pickWord } from "./logic.js";
 
 if (WORDS.length !== 30) throw new Error(`dictionary size ${WORDS.length}`);
 if (new Set(WORDS).size !== 30) throw new Error("dictionary has duplicates");
-if (GOAL !== 20) throw new Error("goal should be 20");
+if (GOAL !== 10) throw new Error("goal should be 10");
 
 const firstSeen = new Set();
 const first = pickWord(firstSeen, null);

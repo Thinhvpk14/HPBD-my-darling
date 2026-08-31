@@ -1,3 +1,5 @@
+import { bindJourney } from "./journey.js?v=57";
+
 const STORAGE_KEY = "hbd.progress.v1";
 
 function readJson(key, fallback) {
@@ -20,6 +22,10 @@ export function createEngine({ stages }) {
   const titleEl = document.getElementById("campaign-title");
   const ledeEl = document.getElementById("campaign-lede");
   const eyebrowEl = document.getElementById("campaign-eyebrow");
+  const mapEl = document.getElementById("journey-map");
+  const girlEl = document.getElementById("map-girl");
+  const bubbleEl = document.getElementById("map-bubble");
+  const fabEl = document.getElementById("map-fab");
 
   let progress = readJson(STORAGE_KEY, {
     current: stages[0]?.id ?? null,
@@ -58,31 +64,55 @@ export function createEngine({ stages }) {
     return unlockedIds().includes(id);
   }
 
+  function isCleared(id) {
+    return progress.cleared.includes(id);
+  }
+
   function setQuery(stageId) {
     const url = new URL(location.href);
-    url.searchParams.set("stage", stageId);
+    if (stageId) url.searchParams.set("stage", stageId);
+    else url.searchParams.delete("stage");
     url.searchParams.delete("debug");
     history.replaceState(null, "", url);
   }
 
   function renderNav() {
     navEl.innerHTML = "";
-    stages.forEach((stage, index) => {
-      const button = document.createElement("button");
-      const unlocked = isUnlocked(stage.id);
-      const cleared = progress.cleared.includes(stage.id);
-      button.type = "button";
-      button.className = "stage-pill";
-      button.dataset.active = String(stage.id === currentId);
-      button.dataset.cleared = String(cleared);
-      button.disabled = !unlocked;
-      button.textContent = `Màn ${index + 1}`;
-      button.title = unlocked ? stage.title : `${stage.title} · chưa mở`;
-      button.addEventListener("click", () => {
-        if (unlocked) goTo(stage.id);
-      });
-      navEl.appendChild(button);
-    });
+  }
+
+  const journey = bindJourney({
+    mapEl,
+    girlEl,
+    bubbleEl,
+    fabEl,
+    stages,
+    isUnlocked,
+    isCleared,
+    onEnter(id) {
+      goTo(id);
+    },
+    onOpenMap() {
+      showMap({ fromId: currentId });
+    },
+  });
+
+  function setHero(title, lede, eyebrow) {
+    titleEl.textContent = title;
+    ledeEl.textContent = lede;
+    eyebrowEl.textContent = eyebrow;
+  }
+
+  function showMap({ fromId } = {}) {
+    if (typeof unmount === "function") unmount();
+    unmount = null;
+    root.innerHTML = "";
+    currentId = null;
+    document.body.classList.add("on-map");
+    document.body.classList.remove("cr-playing");
+    setHero("Hành trình", "Mở từng cửa để tới kho báu. Chạm cửa đang mở để giải đố.", "Bản đồ");
+    setQuery("");
+    const fromIndex = fromId ? stageIndex(fromId) : undefined;
+    journey.show({ fromIndex: fromIndex >= 0 ? fromIndex : undefined });
   }
 
   function goTo(id) {
@@ -97,15 +127,18 @@ export function createEngine({ stages }) {
     progress.current = id;
     save();
     setQuery(id);
-    titleEl.textContent = stage.title;
-    ledeEl.textContent = stage.lede;
-    eyebrowEl.textContent = `Màn ${stageIndex(id) + 1} / ${stages.length}`;
+    document.body.classList.remove("on-map");
+    journey.hide();
+    setHero(stage.title, stage.lede, `Màn ${stageIndex(id) + 1} / ${stages.length}`);
     unmount = stage.mount(root, {
       progress,
       onComplete(result = {}) {
         return complete(result);
       },
       goTo,
+      openMap() {
+        showMap({ fromId: id });
+      },
     });
     renderNav();
     return true;
@@ -117,19 +150,17 @@ export function createEngine({ stages }) {
     }
     progress.results[currentId] = result;
     save();
-    renderNav();
+    journey.paint();
     return nextStage(currentId);
   }
 
   function start() {
     const requested = params.get("stage");
-    const currentKnown = Boolean(stageById(progress.current));
-    const fallback = currentKnown && isUnlocked(progress.current)
-      ? progress.current
-      : stages[0].id;
-    const startId =
-      requested && isUnlocked(requested) ? requested : fallback;
-    goTo(startId);
+    if (requested && isUnlocked(requested)) {
+      goTo(requested);
+      return;
+    }
+    showMap();
   }
 
   return { start };
